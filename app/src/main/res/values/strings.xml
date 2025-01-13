@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IslomLearn</string>
+
+    <string-array name="sections">
+        <item>Главная</item>
+        <item>Обучение</item>
+        <item>Практики</item>
+        <item>Настройки</item>
+    </string-array>
+
+    <string-array name="inrernal_sections">
+        <item>Дуа</item>
+        <item>Коран</item>
+        <item>Тасбех</item>
+        <item>Читать Намаз</item>
+        <item>Время молитвы</item>
+        <item>Кибла</item>
+        <item>Мечети</item>
+        <item>Календарь</item>
+        <item>Изучение ислама</item>
+        <item>Зикры</item>
+        <item>Трекер молитв</item>
+    </string-array>
+
+    <string name="altogether">Всего: </string>
+
+    <string-array name="dialog">
+        <item>Вы уверены?</item>
+        <item>что хотите начать сначала?</item>
+        <item>Да</item>
+        <item>Нет</item>
+        <item>что хотите изменить тасбех?</item>
+    </string-array>
+
+    <string name="choice_MF">Вы мужчина или женщина?</string>
+
+    <string-array name="gender_choice">
+        <item>Мужчской</item>
+        <item>Женский</item>
+        <item>Мужчина</item>
+        <item>Женщина</item>
+        <item>для мужчин</item>
+        <item>для женщин</item>
+    </string-array>
+
+    <string-array name="prayer_time">
+        <item>Фаджр</item>
+        <item>Зухр</item>
+        <item>Аср</item>
+        <item>Магриб</item>
+        <item>Иша</item>
+        <item>Пятничный</item>
+        <item>Текущий</item>
+    </string-array>
+
+    <string name="error">Ошибка, пожайлуста попробуйте снова.</string>
+    <string name="try_again">Попробовать снова</string>
+
+    <string-array name="uz_cities">
+        <item>Самарканд</item>
+        <item>Бухара</item>
+        <item>Андижан</item>
+        <item>Наманган</item>
+        <item>Хива</item>
+        <item>Фергана</item>
+    </string-array>
+    
+    <string-array name="cities">
+        <item>Ташкент</item>
+        <item>Калькутта</item>
+        <item>Дубай</item>
+        <item>Москва</item>
+        <item>Манила</item>
+        <item>Джакарта</item>
+        <item>Алматы</item>
+    </string-array>
+
+    <string-array name="zones">
+        <item>Asia/Tashkent</item>
+        <item>Asia/Kolkata</item>
+        <item>Asia/Dubai</item>
+        <item>Europe/Moscow</item>
+        <item>Asia/Manila</item>
+        <item>Asia/Jakarta</item>
+        <item>Asia/Almaty</item>
+    </string-array>
+    
+    <string-array name="countries">
+        <item>UZ</item>
+        <item>IN</item>
+        <item>AE</item>
+        <item>RU</item>
+        <item>PH</item>
+        <item>ID</item>
+        <item>KZ</item>
+    </string-array>
+    <string name="choose_city">Выбрать город</string>
+    <string name="current">Текущий</string>
+    <string name="city_choose">Выберите город</string>
+</resources>

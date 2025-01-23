@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.islomguide.core.data.repository.BookRepository
 import com.example.islomguide.core.main.Routes.BaseGraph
 import com.example.islomguide.core.main.Routes.FeatureRoutes
 import com.example.islomguide.core.main.Routes.InternalGraph
@@ -20,8 +23,11 @@ import com.example.islomguide.islom.screen.Internal.PrayerTrackerScreen
 import com.example.islomguide.islom.screen.Internal.QiblaLocScreen
 import com.example.islomguide.islom.screen.Internal.TasbexScreen
 import com.example.islomguide.islom.screen.Internal.education.IslomBaseGuideScreen
-import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookScreen
+import com.example.islomguide.islom.screen.Internal.education.BookScreen.components.sections.BookScreen
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModel
+import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModelFactory
+import com.example.islomguide.islom.screen.Internal.education.BookScreen.components.internal.BookDetail
+import com.example.islomguide.islom.screen.Internal.education.BookScreen.components.internal.JuzDetail
 import com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.PrayerReadVM
 import com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.components.times.AsrScreen
 import com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.components.times.FajrScreen
@@ -40,155 +46,216 @@ import com.example.islomguide.islom.ui.screen.settingScreen.Settings
 
 @SuppressLint("NewApi")
 @Composable
-fun Navigation() {
+fun Navigation(bookRepository: BookRepository) {
 
-    val viewModel: IslomViewModel = viewModel()
     val navController: NavHostController = rememberNavController()
-    val tasbexViewModel : TasbexViewModel = viewModel()
     val prayerReadVM : PrayerReadVM = viewModel()
     val prayerTimeVM : PrayerTimeViewModel = viewModel()
-    val bookViewModel : BookViewModel = viewModel()
+    val bookViewModel : BookViewModel = viewModel(
+        factory = BookViewModelFactory(bookRepository)
+    )
+    val tasbexViewModel : TasbexViewModel = viewModel()
+    val viewModel : IslomViewModel = viewModel()
 
     NavHost(
         navController = navController,
-        startDestination = BaseGraph.Home.name
+        startDestination = BaseGraph.Home.route
     ) {
-        composable(BaseGraph.Home.name) {
+
+        composable(BaseGraph.Home.route) {
             Home(
                 viewModel = prayerTimeVM,
                 navController = navController ,
             )
         }
-        composable(BaseGraph.Education.name) {
+        composable(BaseGraph.Education.route) {
             Edu(
                 viewModel = viewModel,
                 navController = navController,
             )
         }
-        composable(BaseGraph.Practice.name) {
+        composable(BaseGraph.Practice.route) {
             Practices(
                 viewModel = viewModel,
                 navController = navController,
             )
 
         }
-        composable(BaseGraph.Setting.name) {
+        composable(BaseGraph.Setting.route) {
             Settings(
                 PTViewModel = prayerTimeVM,
                 navController = navController
             )
         }
-// Internal Navigation
-        composable(InternalGraph.Book.name){
-            BookScreen(
-                viewModel = bookViewModel,
-                navController = navController,
 
-            )
-        }
-        composable(InternalGraph.Mosque.name){
+
+
+// Internal Navigation
+        composable(InternalGraph.Mosque.route){
             MosqueScreen(
                 viewModel = viewModel,
                 navController = navController,
             )
         }
-        composable(InternalGraph.Tasbeh.name){
-            TasbexScreen(
-                viewModel = tasbexViewModel,
-                navController = navController,
-            )
-        }
-        composable(InternalGraph.Prayer_Time.name){
+
+        composable(InternalGraph.PrayerTime.route){
             PrayerTimeScreen(
                 viewModel = prayerTimeVM,
                 navController = navController
             )
         }
-        composable(InternalGraph.Qibla_Location.name){
+
+        composable(InternalGraph.QiblaLocation.route){
             QiblaLocScreen(
                 viewModel = viewModel,
                 navController = navController,
 
-            )
+                )
         }
-        composable(InternalGraph.Calendar.name){
+
+        composable(InternalGraph.Calendar.route){
             CalendarScreen(
                 viewModel = viewModel,
                 navController = navController,
             )
         }
-        composable(InternalGraph.Prayer_Read.name){
+
+        composable(InternalGraph.PrayerTracker.route){
+            PrayerTrackerScreen(
+                viewModel = viewModel,
+                navController = navController,
+            )
+        }
+
+        composable(InternalGraph.Book.route){
+            BookScreen(
+                viewModel = bookViewModel,
+                navController = navController,
+            )
+        }
+
+        composable(InternalGraph.PrayerRead.route){
             PrayerReadScreen(
                 viewModel = prayerReadVM,
                 navController = navController,
                 viewModel2 = prayerTimeVM
             )
         }
-        composable(InternalGraph.Islom_Base_Guide.name){
+
+        composable(InternalGraph.IslamBaseGuide.route){
             IslomBaseGuideScreen(
                 viewModel = viewModel,
                 navController = navController,
             )
         }
-        composable(InternalGraph.Zicry.name){
+
+
+
+        composable(InternalGraph.Tasbeh.route){
+
+            TasbexScreen(
+                viewModel = tasbexViewModel,
+                navController = navController,
+            )
+        }
+        composable(InternalGraph.Zicry.route){
             ZicryScreen(
                 viewModel = viewModel,
                 navController = navController,
             )
         }
-        composable(InternalGraph.Prayer_Tracker.name){
-            PrayerTrackerScreen(
-                viewModel = viewModel,
-                navController = navController,
-            )
-        }
-        composable(InternalGraph.Dua.name) {
+
+        composable(InternalGraph.Dua.route) {
             DuaScreen(
                 viewModel = viewModel,
                 navController = navController
             )
         }
-        composable(FeatureRoutes.PR_Fajr.name) {
-            FajrScreen(
-                navController,
-                prayerReadVM
+
+
+            composable(FeatureRoutes.PR_Fajr.route) {
+                FajrScreen(
+                    navController,
+                    prayerReadVM
+                )
+            }
+
+            composable(FeatureRoutes.PR_Zuhr.route) {
+                ZuhrScreen(
+                    navController,
+                    prayerReadVM
+                )
+            }
+
+            composable(FeatureRoutes.PR_Asr.route) {
+                AsrScreen(
+                    navController,
+                    prayerReadVM
+                )
+            }
+
+            composable(FeatureRoutes.PR_Magrib.route) {
+                MagribScreen(
+                    navController,
+                    prayerReadVM
+                )
+            }
+
+            composable(FeatureRoutes.PR_Isha.route) {
+                IshaScreen(
+                    navController,
+                    prayerReadVM
+                )
+            }
+
+            composable(FeatureRoutes.B_Juz.route) {
+                Juz(
+                    navController,
+                    bookViewModel
+                )
+            }
+
+            composable(FeatureRoutes.B_Bookmarks.route) {
+                Bookmarks(
+                    navController,
+                    bookViewModel
+                )
+            }
+
+        composable(
+            "b_book_dt/{suraId}/{name}",
+            arguments = listOf(
+                navArgument("suraId") { type = NavType.IntType },
+                navArgument("name") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+
+            val suraId = backStackEntry.arguments?.getInt("suraId") ?: 0
+            val name = backStackEntry.arguments?.getString("name") ?: "" // Значение по умолчанию
+
+            BookDetail(
+                navController = navController,
+                viewModel = bookViewModel,
+                surahId = suraId,
+                name = name
             )
         }
-        composable(FeatureRoutes.PR_Zuhr.name) {
-            ZuhrScreen(
-                navController,
-                prayerReadVM
+
+        composable(
+            "b_juz_dt/{juzId}",
+            arguments = listOf(
+                navArgument("juzId") { type = NavType.IntType },
+            )
+        ) { backStackEntry ->
+
+            val juzId = backStackEntry.arguments?.getInt("juzId") ?: 0
+
+            JuzDetail(
+                navController = navController,
+                viewModel = bookViewModel,
+                juzId = juzId
             )
         }
-        composable(FeatureRoutes.PR_Asr.name) {
-            AsrScreen(
-                navController,
-                prayerReadVM
-            )
-        }
-        composable(FeatureRoutes.PR_Magrib.name) {
-            MagribScreen(
-                navController,
-                prayerReadVM
-            )
-        }
-        composable(FeatureRoutes.PR_Isha.name) {
-           IshaScreen(
-                navController,
-                prayerReadVM
-            )
-        }
-        composable(FeatureRoutes.B_Juz.name) {
-            Juz(
-                navController,
-                bookViewModel
-            )
-        }
-        composable(FeatureRoutes.B_Bookmarks.name) {
-            Bookmarks(
-                navController,
-                bookViewModel
-            )
-        }
+
     }
 }

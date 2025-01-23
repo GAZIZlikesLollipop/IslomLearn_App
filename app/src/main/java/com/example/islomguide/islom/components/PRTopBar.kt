@@ -20,11 +20,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -36,16 +31,15 @@ import com.example.islomguide.core.main.Routes.InternalGraph
 import com.example.islomguide.islom.logic.IslomViewModel
 
 
-
 @Composable
-fun FeatureTopBar(
+fun PRTopBar(
     headText : String,
     navController: NavController
 ){
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     val viewModel : IslomViewModel = viewModel()
     val state  = viewModel.state.collectAsState()
-    var icon : ImageVector = if(state.value.content){
+    val icon : ImageVector = if(state.value.content){
         Icons.Default.ArrowUpward
     }else{
         Icons.Default.ArrowDownward
@@ -56,7 +50,10 @@ fun FeatureTopBar(
             IconButton(
                 onClick = {
                     when(currentRoute){
-                        InternalGraph.Book.name , FeatureRoutes.B_Juz.name , FeatureRoutes.B_Bookmarks.name -> navController.navigate(Routes.BaseGraph.Education.name)
+                        InternalGraph.Book.route , FeatureRoutes.B_Juz.route , FeatureRoutes.B_Bookmarks.route -> navController.navigate(Routes.BaseGraph.Education.route)
+                        FeatureRoutes.B_BookDT.route -> {
+                            navController.navigate(InternalGraph.Book.route)
+                        }
                         else -> navController.popBackStack()
                     }
                 }
@@ -75,7 +72,7 @@ fun FeatureTopBar(
                 modifier = Modifier.padding(horizontal = 50.dp),
                 color = MaterialTheme.colorScheme.onBackground
             )
-            if(viewModel.CheckRoute(navController) == true) {
+            if(viewModel.CheckRoute(navController)) {
                 IconButton(
                     onClick = {
                         viewModel.checkContent()

@@ -18,7 +18,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
+
+        val bookRepository = NetworkBookRepository(RetrofitClient.bookApi)
+//        val bookViewModel = ViewModelProvider(this, BookViewModelFactory(bookRepository)).get(BookViewModel::class.java)
+        val bookViewModel: BookViewModel = ViewModelProvider(this, BookViewModelFactory(bookRepository))[BookViewModel::class.java]
+
         val prayerTimesRepository = NetworkPrayerTimeRepository(RetrofitClient.aladhanApi)
         val application = application as IslomLearnApplication // Get the application instance
         val userLocationRepository = application.userLocationRepository // Access the repository
@@ -26,13 +30,11 @@ class MainActivity : ComponentActivity() {
 
         val prayerTimeViewModel = ViewModelProvider(this, prayerTimeVMFactory).get(PrayerTimeViewModel::class.java)
 
-        val bookRepository = NetworkBookRepository(RetrofitClient.bookApi)
-        val bookVMFactory = BookViewModelFactory(bookRepository)
 
-        val bookViewModel = ViewModelProvider(this, bookVMFactory).get(BookViewModel::class.java)
+
         setContent {
             IslomGuideTheme {
-                Navigation()
+                Navigation(bookRepository)
             }
 
         }

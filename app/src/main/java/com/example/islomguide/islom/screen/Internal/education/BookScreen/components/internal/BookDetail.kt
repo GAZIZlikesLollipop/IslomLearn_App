@@ -1,79 +1,78 @@
-package com.example.islomguide.islom.screen.Internal.education.BookScreen.components.sections
+package com.example.islomguide.islom.screen.Internal.education.BookScreen.components.internal
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.islomguide.R
-import com.example.islomguide.core.data.model.network.JuzData
-import com.example.islomguide.islom.components.BookTopBar
+import com.example.islomguide.core.data.model.network.S_Ayahs
 import com.example.islomguide.islom.components.CommonFeatureScreen
+import com.example.islomguide.islom.components.BookTopBar
+import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookUiState
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModel
-import com.example.islomguide.islom.screen.Internal.education.BookScreen.JuzUiState
-import com.example.islomguide.islom.screen.Internal.education.BookScreen.components.NavTopBar
 
 @Composable
-fun Juz(
+fun BookDetail(
     navController: NavController,
-    viewModel: BookViewModel
+    viewModel: BookViewModel,
+    surahId: Int,
+    name : String
 ){
-    val uiState = viewModel.juzUiState
-    val sec = stringArrayResource(R.array.inrernal_sections)[1]
+    val uiState = viewModel.bookUiState
+
     val again = stringResource(R.string.try_again)
     val error = stringResource(R.string.error)
 
-    LaunchedEffect(Unit) {
-        viewModel.fetchAllJuz()
-    }
     CommonFeatureScreen(
-        navController = navController,
-        topAppBar = { BookTopBar(sec,navController) },
+        navController,
+        topAppBar = { BookTopBar(name, navController)},
         content = {
-            NavTopBar(navController)
-            Box {
                 when (uiState) {
-                    is JuzUiState.Success -> {
+                    is BookUiState.Success -> {
+                        val ayahs = uiState.list[surahId]!!.ayahs
 
-                        LazyColumn(
-                            Modifier.fillMaxSize().padding(top = 50.dp)
-                        ) {
+                        LazyColumn{
 
-                            uiState.list.forEachIndexed { index, juzData ->
-                                item {
-                                    if (juzData != null) {
-                                        JuzCard(juzData, index,{navController.navigate("b_juz_dt/${index + 1}")})
-                                    }
-                                    Spacer(Modifier.padding(vertical = 1.dp))
-                                }
+                            item{
+                                Spacer(Modifier.padding(vertical = 12.dp))
                             }
+
+                            items(ayahs) { item ->
+                                Success(item)
+                                Spacer(Modifier.padding(vertical = 1.dp))
+                            }
+
                         }
+
                     }
 
-                    is JuzUiState.Error -> {
+                    is BookUiState.Error -> {
                         Column(
                             modifier = Modifier
-                                .align(Alignment.Center)
-                                .offset(y = 150.dp)) {
+                                .offset(y = 150.dp)
+                        ) {
                             Text(
                                 error,
                                 style = MaterialTheme.typography.headlineLarge,
@@ -82,7 +81,9 @@ fun Juz(
                             )
                             Spacer(Modifier.padding(vertical = 36.dp))
                             Button(
-                                onClick = { viewModel.fetchAllJuz() },
+                                onClick = {
+                                    viewModel.fetchSurahs(surahId)
+                                },
                                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer),
                                 modifier = Modifier
                                     .height(75.dp)
@@ -98,44 +99,52 @@ fun Juz(
                         }
                     }
 
-                    is JuzUiState.Loading -> {
+                    is BookUiState.Loading -> {
                         CircularProgressIndicator(
                             modifier = Modifier
                                 .size(82.dp)
-                                .align(Alignment.Center)
-                                .offset(y = 300.dp,x = 150.dp)
+                                .offset(y = 150.dp)
                         )
                     }
                 }
-            }
         }
     )
 }
-
 @Composable
-fun JuzCard(
-    juz : JuzData,
-    index : Int,
-    onClick : () -> Unit
-){
-    val utils = stringArrayResource(R.array.juz_content)
+fun Success(
+    SAyahs: S_Ayahs?
+) {
     Card(
-        onClick = {
-            onClick()
-        },
-        shape = RoundedCornerShape(0.dp)
-    ){
-        Column(Modifier.fillMaxSize().padding(16.dp)){
+        Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(0.dp),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start, // Выравнивание содержимого Row по левому краю
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth() // Row занимает всю ширину
+                .padding(16.dp)
+        ) {
+            // Номер слева
             Text(
-                "${juz.number } ${utils[0]}",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Text(
-                "${utils[1]} ${juz.surahs[index]?.englishName}, ${juz.ayahs.size + 1} ${utils[2]}",
+                "${SAyahs?.numberInSurah}.",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Start // Выравнивание текста слева
+            )
+
+            Spacer(Modifier.weight(1f)) // Занимает оставшееся пространство
+
+            // Текст справа
+            Text(
+                "${SAyahs?.text}",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.headlineLarge
             )
         }
+
+
     }
 }
+

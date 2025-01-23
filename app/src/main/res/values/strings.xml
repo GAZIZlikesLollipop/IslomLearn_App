@@ -102,6 +102,15 @@
         <item>Зкладки</item>
     </string-array>
 
+    <string name="ayat">аят</string>
+
+    <string-array name="juz_content">
+        <item> - джуз</item>
+        <item>Начинается с суры</item>
+        <item> - аятов</item>
+    </string-array>
+
+
     <string name="choose_city">Выбрать город</string>
     <string name="current">Текущий</string>
     <string name="city_choose">Выберите город</string>

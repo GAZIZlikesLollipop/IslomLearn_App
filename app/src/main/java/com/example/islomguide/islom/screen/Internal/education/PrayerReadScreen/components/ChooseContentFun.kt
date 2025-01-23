@@ -14,11 +14,11 @@ fun chooseContent(
     val currentRoute = navController.currentBackStackEntry?.destination?.route
 
     return when(currentRoute){
-        FeatureRoutes.PR_Fajr.name -> FajrContent
-        FeatureRoutes.PR_Zuhr.name -> ZuhrContent
-        FeatureRoutes.PR_Asr.name -> AsrContent
-        FeatureRoutes.PR_Magrib.name -> MagribContent
-        FeatureRoutes.PR_Isha.name -> IshaContent
+        FeatureRoutes.PR_Fajr.route -> FajrContent
+        FeatureRoutes.PR_Zuhr.route -> ZuhrContent
+        FeatureRoutes.PR_Asr.route -> AsrContent
+        FeatureRoutes.PR_Magrib.route -> MagribContent
+        FeatureRoutes.PR_Isha.route -> IshaContent
         else -> ""
     }
 }

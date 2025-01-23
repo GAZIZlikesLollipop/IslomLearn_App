@@ -61,9 +61,9 @@ fun BottomAppBar(
         ) {
             items.forEachIndexed { index, item ->
                 NavigationBarItem(
-                    selected = currentRoute == item.route.name,
+                    selected = currentRoute == item.route.route,
                     onClick = {
-                        navController.navigate(route = item.route.name)
+                        navController.navigate(route = item.route.route)
                     },
                     icon = {
                         Icon(

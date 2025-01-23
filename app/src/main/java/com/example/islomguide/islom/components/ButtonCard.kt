@@ -60,7 +60,7 @@ fun ButtonCard(navController: NavController) {
                         .clip(CircleShape)
                         .size(125.dp)
                         .clickable {
-                            navController.navigate(card.route.name) // Навигация
+                            navController.navigate(card.route.route) // Навигация
                         },
                     colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inverseOnSurface)
                 ) {
@@ -90,7 +90,7 @@ fun getDynamicPadding(navController: NavController): Modifier {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
 
     return when (currentRoute) {
-        BaseGraph.Home.name -> Modifier
+        BaseGraph.Home.route -> Modifier
             .offset(y = 255.dp)
             .padding(16.dp)
         else -> Modifier.padding(16.dp)

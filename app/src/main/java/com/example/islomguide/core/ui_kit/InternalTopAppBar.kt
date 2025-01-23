@@ -32,20 +32,19 @@ fun InternalTopAppBar(
 ) {
     val sections = stringArrayResource(id = R.array.inrernal_sections)
     val currentRoute = navController.currentBackStackEntry?.destination?.route
-
     // Используем элементы перечисления navGraph напрямую
     val currentSec = when (currentRoute) {
-        InternalGraph.Dua.name -> sections[0]
-        InternalGraph.Book.name, FeatureRoutes.B_Juz.name, FeatureRoutes.B_Bookmarks.name -> sections[1]
-        InternalGraph.Tasbeh.name -> sections[2]
-        InternalGraph.Prayer_Read.name -> sections[3]
-        InternalGraph.Prayer_Time.name -> sections[4]
-        InternalGraph.Qibla_Location.name -> sections[5]
-        InternalGraph.Mosque.name -> sections[6]
-        InternalGraph.Calendar.name -> sections[7]
-        InternalGraph.Islom_Base_Guide.name -> sections[9]
-        InternalGraph.Zicry.name -> sections[9]
-        InternalGraph.Prayer_Tracker.name -> sections[10]
+        InternalGraph.Dua.route -> sections[0]
+        InternalGraph.Book.route, FeatureRoutes.B_Juz.route, FeatureRoutes.B_Bookmarks.route -> sections[1]
+        InternalGraph.Tasbeh.route -> sections[2]
+        InternalGraph.PrayerRead.route -> sections[3]
+        InternalGraph.PrayerTime.route -> sections[4]
+        InternalGraph.QiblaLocation.route -> sections[5]
+        InternalGraph.Mosque.route -> sections[6]
+        InternalGraph.Calendar.route -> sections[7]
+        InternalGraph.IslamBaseGuide.route -> sections[9]
+        InternalGraph.Zicry.route -> sections[9]
+        InternalGraph.PrayerTracker.route -> sections[10]
         else -> ""
     }
 
@@ -66,13 +65,13 @@ fun InternalTopAppBar(
             }
             Text(
                 text = currentSec,
-                style = if(currentRoute == InternalGraph.Prayer_Read.name){
+                style = if(currentRoute == InternalGraph.PrayerRead.route){
                     MaterialTheme.typography.headlineMedium
                 }else{
                     MaterialTheme.typography.headlineLarge
                 },
                 modifier = Modifier.padding(
-                    if(currentRoute == InternalGraph.Prayer_Read.name){
+                    if(currentRoute == InternalGraph.PrayerRead.route){
                         PaddingValues(horizontal = 30.dp)
                     }else{
                         PaddingValues(horizontal = 50.dp)

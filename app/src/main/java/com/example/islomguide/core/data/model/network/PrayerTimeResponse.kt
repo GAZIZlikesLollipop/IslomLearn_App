@@ -31,19 +31,15 @@ data class Timings(
 @Serializable
 data class Date(
     val readable: String?,       // Читаемая дата
-    val timestamp: String?,      // Временная метка
     val gregorian: Gregorian? = null,   // Григорианская дата12
 )
 
 @Serializable
 data class Gregorian(
     val date: String?,
-    val format: String?,
-    val day: String?,
     val weekday: Weekday?,
     val month: Month?,
-    val year: String?,
-    val designation: Designation?
+    val year: String?
 )
 
 @Serializable
@@ -53,14 +49,6 @@ data class Weekday(
 
 @Serializable
 data class Month(
-    val number: Int?,
     val en: String?,
    )
-
-@Serializable
-data class Designation(
-    val abbreviated: String?,
-    val expanded: String?
-)
-
 

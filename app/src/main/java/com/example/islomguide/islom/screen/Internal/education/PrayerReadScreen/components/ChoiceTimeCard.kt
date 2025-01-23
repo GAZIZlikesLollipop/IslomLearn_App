@@ -49,7 +49,7 @@ fun ChoiceTimeCard(
                         .clip(CircleShape)
                         .size(120.dp)
                         .clickable {
-                            card.route?.let { navController.navigate(it.name) } // Навигация
+                            card.route?.let { navController.navigate(it.route) } // Навигация
                         },
                     colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inverseOnSurface)
                 ) {

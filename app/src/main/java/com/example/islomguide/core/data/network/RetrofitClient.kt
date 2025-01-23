@@ -27,7 +27,7 @@ object RetrofitClient {
         time_retrofit.create(AladhanApi::class.java)
     }
 
-    private const val BOOK_BASE_URL = "http://api.alquran.cloud/"
+    private const val BOOK_BASE_URL = "https://api.alquran.cloud/"
 
     private val book_retrofit: Retrofit by lazy {
         Retrofit.Builder()

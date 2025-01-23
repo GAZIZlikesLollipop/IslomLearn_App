@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -55,12 +57,12 @@ fun Home(
     val uiState = viewModel.prayerTimeUiState
     val context = LocalContext.current
     var country by remember { mutableStateOf(viewModel.selectedCountry) }
+    val again = context.getText(R.string.try_again)
+    val error = context.getText(R.string.error)
 
-    LaunchedEffect(key1 = country) {
+
+    LaunchedEffect(Unit) {
         viewModel.setCountry(context, viewModel.getCity())
-    }
-    LaunchedEffect(Unit){
-        viewModel.getCurrentDateAndPrayerTimes()
     }
 
     val time = viewModel.currentTime
@@ -69,81 +71,112 @@ fun Home(
     if(viewModel.selectedCity.isNotEmpty() && viewModel.selectedCountry.isNotEmpty()) {
 
         CommonBaseScreen(navController = navController) {
-            when (uiState) {
-                is PrayerTimeUiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .offset(x = 150.dp, y = 115.dp)
-                    )
-                }
+            LaunchedEffect(Unit){
+                viewModel.getCurrentDateAndPrayerTimes()
+            }
+            Box {
+                when (uiState) {
+                    is PrayerTimeUiState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .offset(x = 150.dp, y = 115.dp)
+                        )
+                    }
 
-                is PrayerTimeUiState.Error -> {
-                    ErrorScreen(context, viewModel)
-                }
+                    is PrayerTimeUiState.Error -> {
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .offset(y = 36.dp)
+                        ) {
+                            Text(
+                                "$error",
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = MaterialTheme.colorScheme.onError,
+                                modifier = Modifier.offset(x = 65.dp)
+                            )
+                            Spacer(Modifier.padding(vertical = 36.dp))
+                            Button(
+                                onClick = { viewModel.getCurrentDateAndPrayerTimes() },
+                                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer),
+                                modifier = Modifier
+                                    .height(75.dp)
+                                    .offset(x = 70.dp)
 
-                is PrayerTimeUiState.Success -> {
-                    val timings = uiState.text
-                    LaunchedEffect(key1 = true) {
-                        while (true) {
-                            delay(1000)  // обновляем каждую секунду
-                            viewModel.updateCurrentTime(context)
-                            viewModel.updateTimeToNextPrayer(context, timings)
+                            ) {
+                                Text(
+                                    "$again",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
                         }
                     }
 
-                    val currentPrayer = viewModel.getCurrentPrayer(context, timings)
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .size(height = 200.dp, width = 128.dp)
-                            .offset(y = 30.dp)
-                            .clickable {
-                                navController.navigate(InternalGraph.Prayer_Time.name) // Навигация
-                            },
-                        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
-                        shape = RoundedCornerShape(36.dp)
-
-                    ) {
-                        Column {
-                            Text(
-                                "${time}\n",
-                                style = MaterialTheme.typography.displayMedium,
-                                textAlign = TextAlign.Right,
-                                color = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .offset(x = 75.dp, y = 8.dp)
-                            )
-                            Text(
-                                currentPrayer,
-                                style = MaterialTheme.typography.displayMedium,
-                                textAlign = TextAlign.Right,
-                                color = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .offset(y = (-40).dp, x = 115.dp)
-                            )
-                            Text(
-                                nextPrayerTime,
-                                style = MaterialTheme.typography.displayMedium,
-                                textAlign = TextAlign.Right,
-                                color = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .offset(y = (-25).dp, x = 80.dp)
-                            )
+                    is PrayerTimeUiState.Success -> {
+                        val timings = uiState.text
+                        LaunchedEffect(key1 = true) {
+                            while (true) {
+                                delay(1000)  // обновляем каждую секунду
+                                viewModel.updateCurrentTime(context)
+                                viewModel.updateTimeToNextPrayer(context, timings)
+                            }
                         }
+
+                        val currentPrayer = viewModel.getCurrentPrayer(context, timings)
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .size(height = 200.dp, width = 128.dp)
+                                .offset(y = 30.dp)
+                                .clickable {
+                                    navController.navigate(InternalGraph.PrayerTime.route) // Навигация
+                                },
+                            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
+                            shape = RoundedCornerShape(36.dp)
+
+                        ) {
+                            Column {
+                                Text(
+                                    "${time}\n",
+                                    style = MaterialTheme.typography.displayMedium,
+                                    textAlign = TextAlign.Right,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .offset(x = 75.dp, y = 8.dp)
+                                )
+                                Text(
+                                    currentPrayer,
+                                    style = MaterialTheme.typography.displayMedium,
+                                    textAlign = TextAlign.Right,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier
+                                        .offset(y = (-40).dp, x = 115.dp)
+                                )
+                                Text(
+                                    nextPrayerTime,
+                                    style = MaterialTheme.typography.displayMedium,
+                                    textAlign = TextAlign.Right,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier
+                                        .offset(y = (-25).dp, x = 80.dp)
+                                )
+                            }
+                        }
+                        //Test
+
                     }
-                    //Test
 
                 }
-
             }
         }
-    }else{
-        WelcomeScreen(navController,viewModel,context)
-    }
+        }else{
+            WelcomeScreen(navController, viewModel, context)
+        }
 
 }
 
@@ -208,36 +241,5 @@ fun WelcomeScreen(
             }
         }
 
-    }
-}
-
-@SuppressLint("NewApi")
-@Composable
-fun ErrorScreen(
-    context: Context,
-    viewModel: PrayerTimeViewModel
-){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(16.dp)
-            .offset(y = (100).dp)
-    ){
-        Text(
-            context.getString(R.string.error),
-            fontSize = 36.sp,
-        )
-        Spacer(Modifier.padding(vertical = 32.dp))
-        Button(
-            onClick = {
-                viewModel.getCurrentDateAndPrayerTimes()
-            }
-        ){
-            Text(
-                context.getString(R.string.try_again),
-                fontSize = 24.sp
-            )
-        }
     }
 }

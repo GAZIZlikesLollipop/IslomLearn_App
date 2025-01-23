@@ -41,6 +41,7 @@ fun Settings(
     var chooseCity by rememberSaveable { mutableStateOf(false) }
     val cities = context.resources.getStringArray(R.array.cities)
     val current = context.getString(R.string.current)
+
     CommonBaseScreen(
         navController = navController,
     ){
@@ -111,10 +112,5 @@ fun Settings(
                 }
             }
         }
-//        Text(
-//            "Город: ${PTViewModel.selectedCity} \nСтрана: ${PTViewModel.selectedCountry}",
-//            style = MaterialTheme.typography.displayMedium,
-//            color = MaterialTheme.colorScheme.secondary,
-//        )
     }
 }

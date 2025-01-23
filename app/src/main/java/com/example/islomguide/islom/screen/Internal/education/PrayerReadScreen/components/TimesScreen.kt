@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import com.example.islomguide.R
 import com.example.islomguide.core.main.Routes.FeatureRoutes
 import com.example.islomguide.islom.components.CommonFeatureScreen
-import com.example.islomguide.islom.components.FeatureTopBar
+import com.example.islomguide.islom.components.PRTopBar
 import com.example.islomguide.islom.logic.IslomViewModel
 import com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.PrayerReadVM
 import kotlinx.coroutines.launch
@@ -54,11 +54,11 @@ fun TimesScreen(
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     val gender_arr = context.resources.getStringArray(R.array.gender_choice)
     val currentTime = when (currentRoute) {
-        FeatureRoutes.PR_Fajr.name -> prayerTimes[0]
-        FeatureRoutes.PR_Zuhr.name -> prayerTimes[1]
-        FeatureRoutes.PR_Asr.name -> prayerTimes[2]
-        FeatureRoutes.PR_Magrib.name -> prayerTimes[3]
-        FeatureRoutes.PR_Isha.name -> prayerTimes[4]
+        FeatureRoutes.PR_Fajr.route -> prayerTimes[0]
+        FeatureRoutes.PR_Zuhr.route -> prayerTimes[1]
+        FeatureRoutes.PR_Asr.route -> prayerTimes[2]
+        FeatureRoutes.PR_Magrib.route -> prayerTimes[3]
+        FeatureRoutes.PR_Isha.route -> prayerTimes[4]
         else -> prayerTimes[6]
     }
     val gender = when {
@@ -68,7 +68,7 @@ fun TimesScreen(
     }
 
     CommonFeatureScreen(
-        topAppBar = { FeatureTopBar("$currentTime $gender", navController) },
+        topAppBar = { PRTopBar("$currentTime $gender", navController) },
         navController = navController,
         content = {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -116,38 +116,38 @@ fun TimesScreen(
                     when {
                         state.isMan -> {
                             when(currentRoute){
-                                FeatureRoutes.PR_Fajr.name ->{
+                                FeatureRoutes.PR_Fajr.route ->{
                                     FirstRakatMen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
                                     FourthRakatMen(context)
                                     NotFirstRakatMen(context,actions[1])
                                     FourthRakatMen(context)
                                 }
-                                FeatureRoutes.PR_Zuhr.name ->{
-                                    FirstRakatMen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
-                                    SecondRakatMen(context)
-                                    ThirdRakatMen(context)
-                                    FourthRakatMen(context)
-                                    NotFirstRakatMen(context,actions[1])
-                                    SecondRakatMen(context)
-                                    ThirdRakatMen(context)
-                                    FourthRakatMen(context)
-                                    NotFirstRakatMen(context,actions[1])
-                                    FourthRakatMen(context)
-                                }
-                                FeatureRoutes.PR_Asr.name ->{
+                                FeatureRoutes.PR_Zuhr.route ->{
                                     FirstRakatMen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
                                     SecondRakatMen(context)
                                     ThirdRakatMen(context)
                                     FourthRakatMen(context)
+                                    NotFirstRakatMen(context,actions[1])
+                                    SecondRakatMen(context)
+                                    ThirdRakatMen(context)
+                                    FourthRakatMen(context)
+                                    NotFirstRakatMen(context,actions[1])
+                                    FourthRakatMen(context)
                                 }
-                                FeatureRoutes.PR_Magrib.name ->{
+                                FeatureRoutes.PR_Asr.route ->{
+                                    FirstRakatMen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
+                                    SecondRakatMen(context)
+                                    ThirdRakatMen(context)
+                                    FourthRakatMen(context)
+                                }
+                                FeatureRoutes.PR_Magrib.route ->{
                                     FirstRakatMen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
                                     SecondRakatMen(context)
                                     FourthRakatMen(context)
                                     NotFirstRakatMen(context,actions[1])
                                     FourthRakatMen(context)
                                 }
-                                FeatureRoutes.PR_Isha.name ->{
+                                FeatureRoutes.PR_Isha.route ->{
                                     FirstRakatMen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
                                     SecondRakatMen(context)
                                     ThirdRakatMen(context)
@@ -159,38 +159,38 @@ fun TimesScreen(
                         }
                         state.isWoman -> {
                             when(currentRoute){
-                                FeatureRoutes.PR_Fajr.name ->{
+                                FeatureRoutes.PR_Fajr.route ->{
                                     FirstRakatWomen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
                                     FourthRakatWomen(context)
                                     NotFirstRakatWomen(context,actions[1])
                                     FourthRakatWomen(context)
                                 }
-                                FeatureRoutes.PR_Zuhr.name ->{
-                                    FirstRakatWomen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
-                                    SecondRakatWomen(context)
-                                    ThirdRakatWomen(context)
-                                    FourthRakatWomen(context)
-                                    NotFirstRakatWomen(context,actions[1])
-                                    SecondRakatWomen(context)
-                                    ThirdRakatWomen(context)
-                                    FourthRakatWomen(context)
-                                    NotFirstRakatWomen(context,actions[1])
-                                    FourthRakatWomen(context)
-                                }
-                                FeatureRoutes.PR_Asr.name ->{
+                                FeatureRoutes.PR_Zuhr.route ->{
                                     FirstRakatWomen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
                                     SecondRakatWomen(context)
                                     ThirdRakatWomen(context)
                                     FourthRakatWomen(context)
+                                    NotFirstRakatWomen(context,actions[1])
+                                    SecondRakatWomen(context)
+                                    ThirdRakatWomen(context)
+                                    FourthRakatWomen(context)
+                                    NotFirstRakatWomen(context,actions[1])
+                                    FourthRakatWomen(context)
                                 }
-                                FeatureRoutes.PR_Magrib.name ->{
+                                FeatureRoutes.PR_Asr.route ->{
+                                    FirstRakatWomen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
+                                    SecondRakatWomen(context)
+                                    ThirdRakatWomen(context)
+                                    FourthRakatWomen(context)
+                                }
+                                FeatureRoutes.PR_Magrib.route ->{
                                     FirstRakatWomen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
                                     SecondRakatWomen(context)
                                     FourthRakatWomen(context)
                                     NotFirstRakatWomen(context,actions[1])
                                     FourthRakatWomen(context)
                                 }
-                                FeatureRoutes.PR_Isha.name ->{
+                                FeatureRoutes.PR_Isha.route ->{
                                     FirstRakatWomen(navController,context,actions[0],fajr,zuhr,asr,magrib,isha)
                                     SecondRakatWomen(context)
                                     ThirdRakatWomen(context)

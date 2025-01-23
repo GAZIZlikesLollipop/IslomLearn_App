@@ -45,19 +45,10 @@ import kotlinx.coroutines.delay
 @Composable
 fun PrayerTimeScreen(
     navController: NavController,
-    viewModel: PrayerTimeViewModel,
-    modifier: Modifier = Modifier,
+    viewModel: PrayerTimeViewModel
 ) {
     val context = LocalContext.current
 
-    val button = {
-        ButtonNavCard(
-            title = "",
-            route = InternalGraph.Prayer_Time,
-            image = null,
-            icon = Icons.Rounded.AccessTimeFilled
-        )
-    }
     LaunchedEffect(Unit){
         viewModel.getCurrentDateAndPrayerTimes()
     }
@@ -169,7 +160,7 @@ fun SuccessScreen(
             }
 
             Text(
-                "${current_date}",
+                "$current_date",
                 style = MaterialTheme.typography.displaySmall,
                 modifier = Modifier
                     .weight(2f)
@@ -282,7 +273,4 @@ fun SuccessScreen(
             Spacer(Modifier.padding(vertical = 5.dp))
         }
     }
-    Text(
-        ""
-    )
 }

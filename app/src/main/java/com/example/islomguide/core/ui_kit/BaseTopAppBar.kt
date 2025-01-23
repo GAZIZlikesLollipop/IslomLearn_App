@@ -27,10 +27,10 @@ fun BaseAppTopBaseBar(
 
     // Используем элементы перечисления navGraph напрямую
     val currentSec = when (currentRoute) {
-        BaseGraph.Home.name -> sections[0]
-        BaseGraph.Education.name -> sections[1]
-        BaseGraph.Practice.name -> sections[2]
-        BaseGraph.Setting.name -> sections[3]
+        BaseGraph.Home.route -> sections[0]
+        BaseGraph.Education.route -> sections[1]
+        BaseGraph.Practice.route -> sections[2]
+        BaseGraph.Setting.route -> sections[3]
         else -> sections[0]
     }
 

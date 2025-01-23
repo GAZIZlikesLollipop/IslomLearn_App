@@ -37,15 +37,15 @@ fun NavTopBar(
     val items = listOf(
         BookTopBar(
             text = sections[0],
-            route = Routes.InternalGraph.Book.name
+            route = Routes.InternalGraph.Book.route
         ),
         BookTopBar(
             text = sections[1],
-            route = FeatureRoutes.B_Juz.name
+            route = FeatureRoutes.B_Juz.route
         ),
         BookTopBar(
             text = sections[2],
-            route = FeatureRoutes.B_Bookmarks.name
+            route = FeatureRoutes.B_Bookmarks.route
         ),
     )
     NavigationBar(

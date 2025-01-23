@@ -18,11 +18,11 @@ class CardData {
         val titles = context.resources.getStringArray(R.array.inrernal_sections)
 
         return when(currentRoute){
-            BaseGraph.Home.name -> {
+            BaseGraph.Home.route -> {
                 listOf(
                     ButtonNavCard(
                         title = titles[10],
-                        route = InternalGraph.Prayer_Tracker,
+                        route = InternalGraph.PrayerTracker,
                         image = null,
                         icon = Icons.Rounded.TrackChanges
                     ),
@@ -40,14 +40,14 @@ class CardData {
                     ),
                     ButtonNavCard(
                         title = titles[5],
-                        route = InternalGraph.Qibla_Location,
+                        route = InternalGraph.QiblaLocation,
                         image = R.drawable.qibla_loc2,
                         icon = null
                     ),
                 )
             }
 
-            BaseGraph.Education.name -> {
+            BaseGraph.Education.route -> {
                 listOf(
                     ButtonNavCard(
                         title = titles[1],
@@ -57,20 +57,20 @@ class CardData {
                     ),
                     ButtonNavCard(
                         title = titles[8],
-                        route = InternalGraph.Islom_Base_Guide,
+                        route = InternalGraph.IslamBaseGuide,
                         image = R.drawable.islom_learn,
                         icon = null
                     ),
                     ButtonNavCard(
                         title = titles[3],
-                        route = InternalGraph.Prayer_Read,
+                        route = InternalGraph.PrayerRead,
                         image = R.drawable.namoz_read,
                         icon = null
                     )
                )
             }
 
-            BaseGraph.Practice.name -> {
+            BaseGraph.Practice.route -> {
                 listOf(
                     ButtonNavCard(
                         title = titles[0],

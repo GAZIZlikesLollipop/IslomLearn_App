@@ -29,10 +29,12 @@ sealed interface JuzUiState{
 
 class BookViewModel(private val bookRepository: BookRepository): ViewModel() {
 
+
     var bookUiState: BookUiState by mutableStateOf(BookUiState.Loading)
         private set
     var juzUiState: JuzUiState by mutableStateOf(JuzUiState.Loading)
         private set
+
 
     fun fetchSurahs(surahId : Int) {
         viewModelScope.launch {

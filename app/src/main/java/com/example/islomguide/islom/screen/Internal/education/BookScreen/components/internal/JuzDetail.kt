@@ -62,8 +62,64 @@ fun JuzDetail(
                         item{
                             Spacer(Modifier.padding(vertical = 12.dp))
                         }
-                        items(uiState.list){juz ->
-                            JuzContent(juz)
+                        items(uiState.list){juzData ->
+                            if (juzData != null) {
+                                val surahList = juzData.surahs.values.sortedBy { it.numberOfAyahs }
+
+                                Column {
+                                    surahList.forEach { surah ->
+                                        // Заголовок суры
+                                        surah.englishName?.let {
+                                            Text(
+                                                text = it,
+                                                style = MaterialTheme.typography.headlineLarge,
+                                                modifier = Modifier.padding(vertical = 12.dp),
+                                                textAlign = TextAlign.Start,
+                                                color = MaterialTheme.colorScheme.secondary
+                                            )
+                                        }
+
+                                        // Список аятов, относящихся к этой суре
+                                        val ayahsForSurah = juzData.ayahs.filter {
+                                            it.numberInSurah != null && it.numberInSurah <= (surah.numberOfAyahs
+                                                ?: 0)
+                                        }
+
+                                        ayahsForSurah.forEach { ayah ->
+                                            Card(
+                                                modifier = Modifier
+                                                    .padding(vertical = 2.dp),
+                                                shape = RoundedCornerShape(0.dp)
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .padding(16.dp)
+                                                        .fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.End,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text(
+                                                        text = "${ayah.numberInSurah}. ",
+                                                        style = MaterialTheme.typography.titleMedium,
+                                                        color = MaterialTheme.colorScheme.tertiary,
+                                                        textAlign = TextAlign.Start,
+                                                        modifier = Modifier.offset(y = 16.dp)
+                                                    )
+                                                    ayah.text?.let {
+                                                        Text(
+                                                            text = it,
+                                                            style = MaterialTheme.typography.headlineMedium,
+                                                            textAlign = TextAlign.Right,
+                                                            color = MaterialTheme.colorScheme.primary
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -113,7 +169,7 @@ fun JuzDetail(
 @Composable
 fun JuzContent(juzData: JuzData?) {
     if (juzData != null) {
-        val surahList = juzData.surahs.values.sortedBy { it.number }
+        val surahList = juzData.surahs.values.sortedBy { it.numberOfAyahs }
 
         Column{
             surahList.forEach { surah ->
@@ -128,7 +184,6 @@ fun JuzContent(juzData: JuzData?) {
                         )
                     }
 
-
                 // Список аятов, относящихся к этой суре
                 val ayahsForSurah = juzData.ayahs.filter { it.numberInSurah != null && it.numberInSurah <= (surah.numberOfAyahs ?: 0) }
 
@@ -140,7 +195,8 @@ fun JuzContent(juzData: JuzData?) {
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(16.dp),
+                                .padding(16.dp)
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -148,14 +204,14 @@ fun JuzContent(juzData: JuzData?) {
                                 text = "${ayah.numberInSurah}. ",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.tertiary,
-
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier.offset(y = 16.dp)
                             )
                             ayah.text?.let {
                                 Text(
                                     text = it,
                                     style = MaterialTheme.typography.headlineMedium,
                                     textAlign = TextAlign.Right,
-                                    modifier = Modifier.weight(2f),
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }

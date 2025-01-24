@@ -62,10 +62,7 @@ fun Juz(
                             uiState.list.forEachIndexed { index, juzData ->
                                 item {
                                     juzData?.let {
-                                        JuzCard(
-                                            it,
-                                            index,
-                                        ) { navController.navigate("b_juz_dt/${index + 1}") }
+                                        JuzCard(it, { navController.navigate("b_juz_dt/${index + 1}") })
                                     }
                                     Spacer(Modifier.padding(vertical = 1.dp))
                                 }
@@ -119,7 +116,6 @@ fun Juz(
 @Composable
 fun JuzCard(
     juz: JuzData?,
-    index: Int,
     onClick: () -> Unit
 ){
     val utils = stringArrayResource(R.array.juz_content)
@@ -141,7 +137,7 @@ fun JuzCard(
             if (juz != null) {
                 val firstSurah = juz.surahs.values.firstOrNull()
                 Text(
-                    "${utils[1]} ${firstSurah?.englishName}, ${juz.ayahs[0].numberInSurah} ${utils[2]}",
+                    "${utils[1]} ${firstSurah?.englishName} и ${juz.ayahs[0].numberInSurah} ${utils[2]}, ${utils[3]} ${juz.ayahs.size} ${utils[2]}",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary
                 )

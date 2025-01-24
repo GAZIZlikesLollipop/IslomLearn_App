@@ -107,7 +107,8 @@
     <string-array name="juz_content">
         <item> - джуз</item>
         <item>Начинается с суры</item>
-        <item> - аятов</item>
+        <item>аята</item>
+        <item>состоит из</item>
     </string-array>
 
 

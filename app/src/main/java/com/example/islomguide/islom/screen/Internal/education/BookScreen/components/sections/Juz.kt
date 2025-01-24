@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.islomguide.R
 import com.example.islomguide.core.data.model.network.JuzData
+import com.example.islomguide.core.data.model.network.Surahs
 import com.example.islomguide.islom.components.BookTopBar
 import com.example.islomguide.islom.components.CommonFeatureScreen
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModel
@@ -60,8 +61,11 @@ fun Juz(
 
                             uiState.list.forEachIndexed { index, juzData ->
                                 item {
-                                    if (juzData != null) {
-                                        JuzCard(juzData, index,{navController.navigate("b_juz_dt/${index + 1}")})
+                                    juzData?.let {
+                                        JuzCard(
+                                            it,
+                                            index,
+                                        ) { navController.navigate("b_juz_dt/${index + 1}") }
                                     }
                                     Spacer(Modifier.padding(vertical = 1.dp))
                                 }
@@ -114,9 +118,9 @@ fun Juz(
 
 @Composable
 fun JuzCard(
-    juz : JuzData,
-    index : Int,
-    onClick : () -> Unit
+    juz: JuzData?,
+    index: Int,
+    onClick: () -> Unit
 ){
     val utils = stringArrayResource(R.array.juz_content)
     Card(
@@ -125,17 +129,23 @@ fun JuzCard(
         },
         shape = RoundedCornerShape(0.dp)
     ){
+
         Column(Modifier.fillMaxSize().padding(16.dp)){
-            Text(
-                "${juz.number } ${utils[0]}",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Text(
-                "${utils[1]} ${juz.surahs[index]?.englishName}, ${juz.ayahs.size + 1} ${utils[2]}",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
+            if (juz != null) {
+                Text(
+                    "${juz.number} ${utils[0]}",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+            if (juz != null) {
+                val firstSurah = juz.surahs.values.firstOrNull()
+                Text(
+                    "${utils[1]} ${firstSurah?.englishName}, ${juz.ayahs[0].numberInSurah} ${utils[2]}",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

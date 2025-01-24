@@ -30,8 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.islomguide.R
-import com.example.islomguide.core.data.model.network.J_Ayahs
-import com.example.islomguide.core.data.model.network.Surahs
+import com.example.islomguide.core.data.model.network.JuzData
 import com.example.islomguide.islom.components.BookTopBar
 import com.example.islomguide.islom.components.CommonFeatureScreen
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModel
@@ -64,7 +63,7 @@ fun JuzDetail(
                             Spacer(Modifier.padding(vertical = 12.dp))
                         }
                         items(uiState.list){juz ->
-                            juz?.ayahs?.let { JuzContent(juz.surahs, it) }
+                            JuzContent(juz)
                         }
                     }
 
@@ -110,51 +109,113 @@ fun JuzDetail(
         }
     )
 }
+
 @Composable
-fun JuzContent(
-    surahs: Map<Int, Surahs>?,
-    ayahs: List<J_Ayahs>
-){
-    Column {
-    surahs?.forEach { surahs ->
-        Text(
-            "${surahs.value.englishName}",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.tertiary
-        )
-    }
+fun JuzContent(juzData: JuzData?) {
+    if (juzData != null) {
+        val surahList = juzData.surahs.values.sortedBy { it.number }
 
-        ayahs.forEach { ayahs ->
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
-                shape = RoundedCornerShape(0.dp),
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp), // Отступы для Row
-                    horizontalArrangement = Arrangement.SpaceBetween, // Разделение между элементами
-                    verticalAlignment = Alignment.CenterVertically, // Выравнивание по вертикали
-                ) {
-                    // Номер слева
-                    Text(
-                        text = "${ayahs.numberInSurah}",
-                        textAlign = TextAlign.Start, // Выравнивание номера влево
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onTertiary
-                    )
+        Column{
+            surahList.forEach { surah ->
+                // Заголовок суры
+                    surah.englishName?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.headlineLarge,
+                            modifier = Modifier.padding(vertical = 12.dp),
+                            textAlign = TextAlign.Start,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
 
-                    // Текст справа
-                    Text(
-                        text = "${ayahs.text}",
-                        textAlign = TextAlign.End, // Выравнивание текста вправо
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f), // Занимает оставшееся пространство
-                        color = MaterialTheme.colorScheme.primary
-                    )
+
+                // Список аятов, относящихся к этой суре
+                val ayahsForSurah = juzData.ayahs.filter { it.numberInSurah != null && it.numberInSurah <= (surah.numberOfAyahs ?: 0) }
+
+                ayahsForSurah.forEach{ ayah ->
+                    Card(
+                        modifier = Modifier
+                            .padding(vertical = 2.dp),
+                        shape = RoundedCornerShape(0.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "${ayah.numberInSurah}. ",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.tertiary,
+
+                            )
+                            ayah.text?.let {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    textAlign = TextAlign.Right,
+                                    modifier = Modifier.weight(2f),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
+
                 }
             }
         }
-
     }
 }
+
+//Me
+//@Composable
+//fun JuzContent(
+//    juzData: JuzData?
+//){
+//    if (juzData == null) return
+//    Column {
+//
+//        juzData.surahs.forEach { surah ->
+//
+//            Text(
+//                "${surah.value.englishName}",
+//                style = MaterialTheme.typography.headlineMedium,
+//                color = MaterialTheme.colorScheme.tertiary
+//            )
+//            val surahByAyahs = juzData.ayahs.filter { it.numberInSurah!! in 1..surah.value.numberOfAyahs!! }
+//            surahByAyahs.forEach { ayah ->
+//
+//                Card(
+//                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
+//                    shape = RoundedCornerShape(0.dp),
+//                ) {
+//                    Row(
+//                        Modifier
+//                            .fillMaxWidth()
+//                            .padding(horizontal = 16.dp), // Отступы для Row
+//                        horizontalArrangement = Arrangement.SpaceBetween, // Разделение между элементами
+//                        verticalAlignment = Alignment.CenterVertically, // Выравнивание по вертикали
+//                    ) {
+//                        // Номер слева
+//                        Text(
+//                            text = "${ayah.numberInSurah}",
+//                            textAlign = TextAlign.Start, // Выравнивание номера влево
+//                            style = MaterialTheme.typography.titleMedium,
+//                            color = MaterialTheme.colorScheme.onTertiary
+//                        )
+//
+//                        // Текст справа
+//                        Text(
+//                            text = "${ayah.text}",
+//                            textAlign = TextAlign.End, // Выравнивание текста вправо
+//                            style = MaterialTheme.typography.titleLarge,
+//                            modifier = Modifier.weight(1f), // Занимает оставшееся пространство
+//                            color = MaterialTheme.colorScheme.primary
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}

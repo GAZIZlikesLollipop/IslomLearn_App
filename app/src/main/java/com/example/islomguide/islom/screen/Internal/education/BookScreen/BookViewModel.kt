@@ -77,6 +77,7 @@ class BookViewModel(private val bookRepository: BookRepository): ViewModel() {
             }
         }
     }
+
     fun fetchAllJuz() {
         viewModelScope.launch {
             juzUiState = try {

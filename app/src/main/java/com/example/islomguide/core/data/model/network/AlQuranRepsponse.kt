@@ -31,7 +31,6 @@ data class S_Ayahs(
 )
 
 @Serializable
-
 data class JuzResponse(
     val data : JuzData
 )

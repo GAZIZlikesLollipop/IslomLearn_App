@@ -50,12 +50,6 @@ class CardData {
             BaseGraph.Education.route -> {
                 listOf(
                     ButtonNavCard(
-                        title = titles[1],
-                        route = InternalGraph.Book,
-                        image = R.drawable.quran,
-                        icon = null
-                    ),
-                    ButtonNavCard(
                         title = titles[8],
                         route = InternalGraph.IslamBaseGuide,
                         image = R.drawable.islom_learn,
@@ -65,6 +59,12 @@ class CardData {
                         title = titles[3],
                         route = InternalGraph.PrayerRead,
                         image = R.drawable.namoz_read,
+                        icon = null
+                    ),
+                    ButtonNavCard(
+                        title = titles[1],
+                        route = InternalGraph.Book,
+                        image = R.drawable.quran,
                         icon = null
                     )
                )

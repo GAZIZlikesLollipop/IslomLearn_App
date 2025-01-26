@@ -34,8 +34,9 @@ fun BookTopBar(
                 onClick = {
                     when(currentRoute){
                         FeatureRoutes.B_BookDT.route -> navController.navigate(Routes.InternalGraph.Book.route)
-                        FeatureRoutes.B_JuzDT.route -> navController.navigate(FeatureRoutes.B_Juz)
-                        FeatureRoutes.B_BMDT.route -> navController.navigate(FeatureRoutes.B_Bookmarks)
+                        FeatureRoutes.B_JuzDT.route -> navController.navigate(FeatureRoutes.B_Juz.route)
+                        FeatureRoutes.B_BMDT.route -> navController.navigate(FeatureRoutes.B_Bookmarks.route)
+                        FeatureRoutes.B_Juz.route -> navController.navigate(Routes.BaseGraph.Education.route)
                         else -> navController.popBackStack()
                     }
                 }

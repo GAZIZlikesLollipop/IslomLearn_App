@@ -1,6 +1,8 @@
 package com.example.islomguide.core.main
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -56,19 +58,34 @@ fun Navigation(bookRepository: BookRepository) {
     )
     val tasbexViewModel : TasbexViewModel = viewModel()
     val viewModel : IslomViewModel = viewModel()
-
+    val currentRoute = navController.currentDestination?.route
     NavHost(
         navController = navController,
         startDestination = BaseGraph.Home.route
     ) {
 
-        composable(BaseGraph.Home.route) {
+        composable(
+            BaseGraph.Home.route,
+//            enterTransition = {
+//                slideIntoContainer(
+//                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+//                    animationSpec = tween(700)
+//                )
+//            }
+        ) {
             Home(
                 viewModel = prayerTimeVM,
                 navController = navController ,
             )
         }
-        composable(BaseGraph.Education.route) {
+        composable(BaseGraph.Education.route,
+//            enterTransition = {
+//            slideIntoContainer(
+//                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+//                animationSpec = tween(700)
+//            )
+//        }
+        ) {
             Edu(
                 viewModel = viewModel,
                 navController = navController,
@@ -173,54 +190,57 @@ fun Navigation(bookRepository: BookRepository) {
         }
 
 
-            composable(FeatureRoutes.PR_Fajr.route) {
-                FajrScreen(
-                    navController,
-                    prayerReadVM
-                )
-            }
+        composable(FeatureRoutes.PR_Fajr.route) {
+            FajrScreen(
+                navController,
+                prayerReadVM
+            )
+        }
 
-            composable(FeatureRoutes.PR_Zuhr.route) {
-                ZuhrScreen(
-                    navController,
-                    prayerReadVM
-                )
-            }
+        composable(
+            FeatureRoutes.PR_Zuhr.route,
 
-            composable(FeatureRoutes.PR_Asr.route) {
-                AsrScreen(
-                    navController,
-                    prayerReadVM
-                )
-            }
+            ) {
+            ZuhrScreen(
+                navController,
+                prayerReadVM
+            )
+        }
 
-            composable(FeatureRoutes.PR_Magrib.route) {
-                MagribScreen(
-                    navController,
-                    prayerReadVM
-                )
-            }
+        composable(FeatureRoutes.PR_Asr.route) {
+            AsrScreen(
+                navController,
+                prayerReadVM
+            )
+        }
 
-            composable(FeatureRoutes.PR_Isha.route) {
-                IshaScreen(
-                    navController,
-                    prayerReadVM
-                )
-            }
+        composable(FeatureRoutes.PR_Magrib.route) {
+            MagribScreen(
+                navController,
+                prayerReadVM
+            )
+        }
 
-            composable(FeatureRoutes.B_Juz.route) {
-                Juz(
-                    navController,
-                    bookViewModel
-                )
-            }
+        composable(FeatureRoutes.PR_Isha.route) {
+            IshaScreen(
+                navController,
+                prayerReadVM
+            )
+        }
 
-            composable(FeatureRoutes.B_Bookmarks.route) {
-                Bookmarks(
-                    navController,
-                    bookViewModel
-                )
-            }
+        composable(FeatureRoutes.B_Juz.route) {
+            Juz(
+                navController,
+                bookViewModel
+            )
+        }
+
+        composable(FeatureRoutes.B_Bookmarks.route) {
+            Bookmarks(
+                navController,
+                bookViewModel
+            )
+        }
 
         composable(
             "b_book_dt/{suraId}/{name}",
@@ -242,18 +262,21 @@ fun Navigation(bookRepository: BookRepository) {
         }
 
         composable(
-            "b_juz_dt/{juzId}",
+            "b_juz_dt/{juzId}/{surId}",
             arguments = listOf(
                 navArgument("juzId") { type = NavType.IntType },
+                navArgument("surId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
 
             val juzId = backStackEntry.arguments?.getInt("juzId") ?: 0
+            val surId = backStackEntry.arguments?.getInt("surId") ?: 0
 
             JuzDetail(
                 navController = navController,
                 viewModel = bookViewModel,
-                juzId = juzId
+                juzId = juzId,
+                surId = surId
             )
         }
 

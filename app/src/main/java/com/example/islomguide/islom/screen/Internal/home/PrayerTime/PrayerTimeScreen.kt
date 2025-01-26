@@ -5,9 +5,11 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -37,6 +39,7 @@ import com.example.islomguide.core.data.model.ui.ButtonNavCard
 import com.example.islomguide.core.data.model.network.Timings
 import com.example.islomguide.core.main.Routes.InternalGraph
 import com.example.islomguide.core.ui_kit.CommonInternalScreen
+import com.example.islomguide.core.ui_kit.ErrorScreen
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeUiState
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModel
 import kotlinx.coroutines.delay
@@ -55,53 +58,32 @@ fun PrayerTimeScreen(
     val uiState = viewModel.prayerTimeUiState
 
     CommonInternalScreen(navController) {
-        when(uiState){
-             is PrayerTimeUiState.Success -> {
-                 uiState.text?.let { SuccessScreen(times = it,viewModel) }
-             }
-            is PrayerTimeUiState.Error -> {
-                ErrorScreen(context,viewModel)
-            }
-            is PrayerTimeUiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier
-                    .size(64.dp)
-                    .offset(x = 175.dp, y = 275.dp))
+        Box {
+            when (uiState) {
+                is PrayerTimeUiState.Success -> {
+                    uiState.text?.let { SuccessScreen(times = it, viewModel) }
+                }
+
+                is PrayerTimeUiState.Error -> {
+                    ErrorScreen(
+                        { viewModel.getCurrentDateAndPrayerTimes() },
+                        modifier = Modifier.fillMaxSize().align(alignment = Alignment.Center)
+                    )
+                }
+
+                is PrayerTimeUiState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .offset(x = 175.dp, y = 275.dp)
+                    )
+                }
             }
         }
     }
 }
 
-@SuppressLint("NewApi")
-@Composable
-fun ErrorScreen(
-    context: Context,
-    viewModel: PrayerTimeViewModel
-){
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(16.dp)
-            .offset(y = (100).dp)
-    ){
-        Text(
-            context.getString(R.string.error),
-            fontSize = 36.sp
-        )
-        Spacer(Modifier.padding(vertical = 32.dp))
-        Button(
-            onClick = {
-                viewModel.getCurrentDateAndPrayerTimes()
-            }
-        ){
-            Text(
-                context.getString(R.string.try_again),
-                fontSize = 24.sp
-            )
-        }
-    }
-}
 @SuppressLint("NewApi")
 @Composable
 fun SuccessScreen(
@@ -127,7 +109,7 @@ fun SuccessScreen(
         style = MaterialTheme.typography.displayLarge,
         color = MaterialTheme.colorScheme.secondary,
         modifier = Modifier
-            .offset(y = 50.dp,x = 75.dp)
+            .offset(y = 50.dp, x = 75.dp)
             .padding(16.dp)
     )
     Card(

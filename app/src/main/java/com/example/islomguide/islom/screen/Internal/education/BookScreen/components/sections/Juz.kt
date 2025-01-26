@@ -1,23 +1,30 @@
 package com.example.islomguide.islom.screen.Internal.education.BookScreen.components.sections
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -27,6 +34,7 @@ import androidx.navigation.NavController
 import com.example.islomguide.R
 import com.example.islomguide.core.data.model.network.JuzData
 import com.example.islomguide.core.data.model.network.Surahs
+import com.example.islomguide.core.ui_kit.ErrorScreen
 import com.example.islomguide.islom.components.BookTopBar
 import com.example.islomguide.islom.components.CommonFeatureScreen
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModel
@@ -37,111 +45,119 @@ import com.example.islomguide.islom.screen.Internal.education.BookScreen.compone
 fun Juz(
     navController: NavController,
     viewModel: BookViewModel
-){
+) {
+
     val uiState = viewModel.juzUiState
-    val sec = stringArrayResource(R.array.inrernal_sections)[1]
-    val again = stringResource(R.string.try_again)
-    val error = stringResource(R.string.error)
+    val sectionTitle = stringArrayResource(R.array.inrernal_sections)[1]
+    val juzContentLabels = stringArrayResource(R.array.juz_content)
 
     LaunchedEffect(Unit) {
         viewModel.fetchAllJuz()
     }
+
     CommonFeatureScreen(
         navController = navController,
-        topAppBar = { BookTopBar(sec,navController) },
+        topAppBar = { BookTopBar(sectionTitle, navController) },
         content = {
-            NavTopBar(navController)
             Box {
-                when (uiState) {
-                    is JuzUiState.Success -> {
-
-                        LazyColumn(
-                            Modifier.fillMaxSize().padding(top = 50.dp)
-                        ) {
-
-                            uiState.list.forEachIndexed { index, juzData ->
-                                item {
-                                    juzData?.let {
-                                        JuzCard(it, { navController.navigate("b_juz_dt/${index + 1}") })
-                                    }
-                                    Spacer(Modifier.padding(vertical = 1.dp))
-                                }
-                            }
-                        }
-                    }
-
-                    is JuzUiState.Error -> {
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .offset(y = 150.dp)) {
-                            Text(
-                                error,
-                                style = MaterialTheme.typography.headlineLarge,
-                                color = MaterialTheme.colorScheme.onError,
-                                modifier = Modifier.offset(x = 65.dp)
+                NavTopBar(navController)
+                Box(Modifier.fillMaxSize()) {
+                    when (uiState) {
+                        is JuzUiState.Success -> {
+                            JuzList(
+                                juzList = uiState.list,
+                                navController = navController,
+                                juzContentLabels = juzContentLabels
                             )
-                            Spacer(Modifier.padding(vertical = 36.dp))
-                            Button(
-                                onClick = { viewModel.fetchAllJuz() },
-                                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer),
-                                modifier = Modifier
-                                    .height(75.dp)
-                                    .offset(x = 70.dp)
+                        }
 
-                            ) {
-                                Text(
-                                    again,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    color = MaterialTheme.colorScheme.error
+                        is JuzUiState.Error -> {
+                                ErrorScreen(
+                                    { viewModel.fetchAllJuz() },
+                                    modifier = Modifier.fillMaxSize().align(alignment = Alignment.Center)
                                 )
                             }
-                        }
-                    }
 
-                    is JuzUiState.Loading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(82.dp)
-                                .align(Alignment.Center)
-                                .offset(y = 300.dp,x = 150.dp)
-                        )
+                        is JuzUiState.Loading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(82.dp)
+                                    .align(Alignment.Center)
+                            )
+                        }
                     }
                 }
             }
         }
     )
+
+}
+
+@Composable
+fun JuzList(
+    juzList: List<JuzData?>,
+    navController: NavController,
+    juzContentLabels: Array<String>
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+    ) {
+        items(juzList) { juz ->
+            var isExpanded by rememberSaveable { mutableStateOf(false) }
+
+            Card(
+                onClick = { isExpanded = !isExpanded },
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Column(Modifier.padding(16.dp)) {
+                    Text(
+                        text = "${juz?.number} ${juzContentLabels[0]}",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    val firstSurah = juz?.surahs?.values?.firstOrNull()
+                    Text(
+                        text = "${juzContentLabels[1]} ${firstSurah?.englishName} " +
+                                "${juz?.ayahs?.get(0)?.numberInSurah} ${juzContentLabels[2]}, " +
+                                "${juzContentLabels[3]} ${juz?.ayahs?.size} ${juzContentLabels[2]}",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    AnimatedVisibility(visible = isExpanded) {
+                        Column {
+                            juz?.surahs?.values?.forEach { surah ->
+                                JuzCard(surah) {
+                                    navController.navigate("b_juz_dt/${juz.number}/${surah.number}")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun JuzCard(
-    juz: JuzData?,
+    surah: Surahs,
     onClick: () -> Unit
-){
-    val utils = stringArrayResource(R.array.juz_content)
-    Card(
-        onClick = {
-            onClick()
-        },
-        shape = RoundedCornerShape(0.dp)
-    ){
-
-        Column(Modifier.fillMaxSize().padding(16.dp)){
-            if (juz != null) {
-                Text(
-                    "${juz.number} ${utils[0]}",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-            }
-            if (juz != null) {
-                val firstSurah = juz.surahs.values.firstOrNull()
-                Text(
-                    "${utils[1]} ${firstSurah?.englishName} и ${juz.ayahs[0].numberInSurah} ${utils[2]}, ${utils[3]} ${juz.ayahs.size} ${utils[2]}",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        shape = RoundedCornerShape(4.dp),
+        onClick = onClick
+    ) {
+        Text(
+            text = "${surah.number}. ${surah.englishName}",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier.padding(8.dp)
+        )
     }
 }

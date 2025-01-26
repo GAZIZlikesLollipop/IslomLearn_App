@@ -86,5 +86,4 @@ dependencies {
     // Data Store
     implementation(libs.androidx.datastore.preferences)
 
-
 }

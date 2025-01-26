@@ -44,6 +44,7 @@ import androidx.navigation.NavController
 import com.example.islomguide.R
 import com.example.islomguide.core.main.Routes.InternalGraph
 import com.example.islomguide.core.ui_kit.CommonBaseScreen
+import com.example.islomguide.core.ui_kit.ErrorScreen
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeUiState
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModel
 import kotlinx.coroutines.delay
@@ -85,33 +86,10 @@ fun Home(
                     }
 
                     is PrayerTimeUiState.Error -> {
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .offset(y = 36.dp)
-                        ) {
-                            Text(
-                                "$error",
-                                style = MaterialTheme.typography.headlineLarge,
-                                color = MaterialTheme.colorScheme.onError,
-                                modifier = Modifier.offset(x = 65.dp)
-                            )
-                            Spacer(Modifier.padding(vertical = 36.dp))
-                            Button(
-                                onClick = { viewModel.getCurrentDateAndPrayerTimes() },
-                                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer),
-                                modifier = Modifier
-                                    .height(75.dp)
-                                    .offset(x = 70.dp)
-
-                            ) {
-                                Text(
-                                    "$again",
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        }
+                        ErrorScreen(
+                            { viewModel.getCurrentDateAndPrayerTimes() },
+                            modifier = Modifier.fillMaxSize().offset(y = (-200).dp)
+                        )
                     }
 
                     is PrayerTimeUiState.Success -> {

@@ -108,7 +108,6 @@ fun BookScreen(
                                         )}/${surahs.englishName}") }
                                     }
 
-                                    Spacer(Modifier.padding(vertical = 1.dp))
                                 }
 
                             }
@@ -131,13 +130,11 @@ fun Success(
     val ayat = context.getString(R.string.ayat)
     Box {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier.padding(6.dp)
                 .clickable {
                     onClick()
                 },
-            shape = RoundedCornerShape(0.dp)
         ) {
             Row {
                 surahs.number?.let {

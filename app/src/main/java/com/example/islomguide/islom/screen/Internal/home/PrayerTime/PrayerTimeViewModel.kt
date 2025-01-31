@@ -36,7 +36,6 @@ class PrayerTimeViewModel(
     private val prayerTimesRepository: PrayerTimesRepository,
     private val userLocationRepository: UserLocationRepository
 ) : ViewModel() {
-
     var prayerTimeUiState: PrayerTimeUiState by mutableStateOf(PrayerTimeUiState.Loading)
         private set
 

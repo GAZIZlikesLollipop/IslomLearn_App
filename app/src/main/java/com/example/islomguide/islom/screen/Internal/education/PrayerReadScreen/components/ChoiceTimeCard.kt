@@ -22,9 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.islomguide.islom.components.PrayerTimeChoice
+import com.example.islomguide.core.data.model.ui.PrayerTimeChoice
+import com.example.islomguide.core.main.Routes.FeatureRoutes
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -79,5 +79,25 @@ fun ChoiceTimeCard(
                 )
             }
         }
+    }
+}
+
+fun chooseContent(
+    navController: NavController,
+    FajrContent : String,
+    ZuhrContent : String,
+    AsrContent : String,
+    MagribContent : String,
+    IshaContent : String
+): String{
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
+
+    return when(currentRoute){
+        FeatureRoutes.PR_Fajr.route -> FajrContent
+        FeatureRoutes.PR_Zuhr.route -> ZuhrContent
+        FeatureRoutes.PR_Asr.route -> AsrContent
+        FeatureRoutes.PR_Magrib.route -> MagribContent
+        FeatureRoutes.PR_Isha.route -> IshaContent
+        else -> ""
     }
 }

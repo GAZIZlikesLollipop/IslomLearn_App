@@ -2,13 +2,11 @@ package com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.
 
 import android.content.Context
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.islomguide.R
-import com.example.islomguide.islom.components.TextComponents.ArticleHeader
-import com.example.islomguide.islom.components.TextComponents.ArticleParagraph
-import com.example.islomguide.islom.components.TextComponents.ArticleSubheader
+import com.example.islomguide.core.ui_kit.TextComponents.ArticleHeader
+import com.example.islomguide.core.ui_kit.TextComponents.ArticleParagraph
+import com.example.islomguide.core.ui_kit.TextComponents.ArticleSubheader
 
 
 fun LazyListScope.FirstRakatMen(

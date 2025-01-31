@@ -1,4 +1,4 @@
-package com.example.islomguide.islom.components
+package com.example.islomguide.core.data.model.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
 import com.example.islomguide.R
-import com.example.islomguide.core.data.model.ui.ChoiceCardData
 import com.example.islomguide.core.main.Routes.FeatureRoutes
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeUiState
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModel

@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -25,15 +22,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.islomguide.R
 import com.example.islomguide.core.data.model.network.JuzData
+import com.example.islomguide.core.ui_kit.CommonFeatureScreen
 import com.example.islomguide.core.ui_kit.ErrorScreen
-import com.example.islomguide.islom.components.BookTopBar
-import com.example.islomguide.islom.components.CommonFeatureScreen
+import com.example.islomguide.core.ui_kit.Loading
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModel
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.JuzUiState
 
@@ -45,22 +40,16 @@ fun JuzDetail(
     surId : Int
 ){
     val uiState = viewModel.juzUiState
-    val juzCon = stringArrayResource(R.array.juz_content)[0]
 
     LaunchedEffect(Unit){
         viewModel.fetchJuz(juzId)
     }
     CommonFeatureScreen(
-        navController = navController,
-        topAppBar = { BookTopBar("$juzId $juzCon", navController) },
         content = {
             Box {
                 when (uiState) {
                     is JuzUiState.Success -> {
-                        JuzList(
-                            uiState.list,
-                            surId
-                        )
+                        JuzList(uiState.list, surId)
                     }
 
                     is JuzUiState.Error -> {
@@ -71,11 +60,7 @@ fun JuzDetail(
                     }
 
                     is JuzUiState.Loading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(82.dp)
-                                .offset(y = 150.dp)
-                        )
+                       Loading()
                     }
                 }
             }
@@ -91,7 +76,7 @@ fun JuzList(
         Modifier.fillMaxSize()
     ) {
         item{
-            Spacer(Modifier.padding(vertical = 12.dp))
+            Spacer(Modifier.offset(y = 50.dp))
         }
         items(juzData){ juzData ->
             if (juzData != null) {

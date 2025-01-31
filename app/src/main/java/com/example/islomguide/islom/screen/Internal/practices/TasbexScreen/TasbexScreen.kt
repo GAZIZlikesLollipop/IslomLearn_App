@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.islomguide.R
-import com.example.islomguide.core.ui_kit.CommonInternalScreen
+import com.example.islomguide.core.ui_kit.CommonFeatureScreen
 import com.example.islomguide.islom.screen.Internal.practices.TasbexScreen.TasbexViewModel
 import androidx.compose.ui.platform.LocalContext
 
@@ -54,9 +54,7 @@ fun TasbexScreen(
     }else{
         "${state.currentCount}/${state.countMax}"
     }
-    CommonInternalScreen(
-        navController
-    ) {
+    CommonFeatureScreen {
         Row(
             Modifier.padding(30.dp)
         ){

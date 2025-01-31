@@ -3,19 +3,13 @@ package com.example.islomguide.islom.screen.Internal.education.BookScreen.compon
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,18 +22,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.islomguide.R
 import com.example.islomguide.core.data.model.network.JuzData
 import com.example.islomguide.core.data.model.network.Surahs
+import com.example.islomguide.core.ui_kit.CommonFeatureScreen
 import com.example.islomguide.core.ui_kit.ErrorScreen
-import com.example.islomguide.islom.components.BookTopBar
-import com.example.islomguide.islom.components.CommonFeatureScreen
+import com.example.islomguide.core.ui_kit.Loading
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModel
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.JuzUiState
-import com.example.islomguide.islom.screen.Internal.education.BookScreen.components.NavTopBar
 
 @Composable
 fun Juz(
@@ -48,7 +40,6 @@ fun Juz(
 ) {
 
     val uiState = viewModel.juzUiState
-    val sectionTitle = stringArrayResource(R.array.inrernal_sections)[1]
     val juzContentLabels = stringArrayResource(R.array.juz_content)
 
     LaunchedEffect(Unit) {
@@ -56,18 +47,16 @@ fun Juz(
     }
 
     CommonFeatureScreen(
-        navController = navController,
-        topAppBar = { BookTopBar(sectionTitle, navController) },
         content = {
             Box {
-                NavTopBar(navController)
                 Box(Modifier.fillMaxSize()) {
                     when (uiState) {
                         is JuzUiState.Success -> {
                             JuzList(
                                 juzList = uiState.list,
                                 navController = navController,
-                                juzContentLabels = juzContentLabels
+                                juzContentLabels = juzContentLabels,
+                                viewModel
                             )
                         }
 
@@ -79,11 +68,7 @@ fun Juz(
                             }
 
                         is JuzUiState.Loading -> {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .size(82.dp)
-                                    .align(Alignment.Center)
-                            )
+                            Loading()
                         }
                     }
                 }
@@ -97,12 +82,13 @@ fun Juz(
 fun JuzList(
     juzList: List<JuzData?>,
     navController: NavController,
-    juzContentLabels: Array<String>
+    juzContentLabels: Array<String>,
+    viewModel: BookViewModel
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 50.dp)
+            .padding(top = 110.dp)
     ) {
         items(juzList) { juz ->
             var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -110,7 +96,7 @@ fun JuzList(
             Card(
                 onClick = { isExpanded = !isExpanded },
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(5.dp)
             ) {
                 Column(Modifier.padding(16.dp)) {
                     Text(
@@ -130,6 +116,8 @@ fun JuzList(
                         Column {
                             juz?.surahs?.values?.forEach { surah ->
                                 JuzCard(surah) {
+                                    viewModel.juzId = juz.number ?: 0
+                                    viewModel.surahId = surah.number ?: 0
                                     navController.navigate("b_juz_dt/${juz.number}/${surah.number}")
                                 }
                             }
@@ -149,7 +137,7 @@ fun JuzCard(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 3.dp),
         shape = RoundedCornerShape(4.dp),
         onClick = onClick
     ) {

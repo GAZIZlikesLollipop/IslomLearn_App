@@ -14,10 +14,12 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.islomguide.R
 import com.example.islomguide.core.data.model.ui.BottomNavigationBar
 import com.example.islomguide.core.main.Routes.BaseGraph
@@ -27,7 +29,8 @@ import com.example.islomguide.core.main.Routes.BaseGraph
 fun BottomAppBar(
     navController: NavController
 ) {
-    val currentRoute = navController.currentBackStackEntry?.destination?.route
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
     val sections = stringArrayResource(id = R.array.sections)
 
     val items = listOf(
@@ -63,7 +66,12 @@ fun BottomAppBar(
                 NavigationBarItem(
                     selected = currentRoute == item.route.route,
                     onClick = {
-                        navController.navigate(route = item.route.route)
+                        navController.navigate(route = item.route.route) {
+                            // Добавьте опцию для удаления старых экранах при переходе
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     },
                     icon = {
                         Icon(

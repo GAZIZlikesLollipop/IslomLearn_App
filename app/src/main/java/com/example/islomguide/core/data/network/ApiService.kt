@@ -1,8 +1,8 @@
 package com.example.islomguide.core.data.network
 
 import com.example.islomguide.core.data.model.network.JuzResponse
-import com.example.islomguide.core.data.model.network.SurahsRepsponse
 import com.example.islomguide.core.data.model.network.PrayerTimesResponse
+import com.example.islomguide.core.data.model.network.QuranRepsponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -17,12 +17,10 @@ interface AladhanApi {
 }
 
 interface AlQuranApi {
-    @GET("v1/surah/{index}")
-    suspend fun getSurahs(
-        @Path("index") index: Int
-    ): SurahsRepsponse
     @GET("v1/juz/{num}/quran-uthmani")
     suspend fun getJuz(
         @Path("num") num : Int
     ): JuzResponse
+    @GET("v1/quran/quran-uthmani")
+    suspend fun getQuranContent(): QuranRepsponse
 }

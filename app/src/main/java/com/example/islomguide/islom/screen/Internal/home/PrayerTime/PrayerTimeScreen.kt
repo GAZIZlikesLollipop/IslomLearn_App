@@ -1,7 +1,6 @@
 package com.example.islomguide.islom.screen.Internal
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -16,10 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccessTimeFilled
 import androidx.compose.material.icons.rounded.ChevronLeft
 import androidx.compose.material.icons.rounded.ChevronRight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -32,13 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.islomguide.R
-import com.example.islomguide.core.data.model.ui.ButtonNavCard
 import com.example.islomguide.core.data.model.network.Timings
-import com.example.islomguide.core.main.Routes.InternalGraph
-import com.example.islomguide.core.ui_kit.CommonInternalScreen
+import com.example.islomguide.core.ui_kit.CommonFeatureScreen
 import com.example.islomguide.core.ui_kit.ErrorScreen
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeUiState
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModel
@@ -57,7 +51,7 @@ fun PrayerTimeScreen(
     }
     val uiState = viewModel.prayerTimeUiState
 
-    CommonInternalScreen(navController) {
+    CommonFeatureScreen {
         Box {
             when (uiState) {
                 is PrayerTimeUiState.Success -> {

@@ -22,8 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.islomguide.R
 import com.example.islomguide.core.main.Routes.FeatureRoutes
-import com.example.islomguide.islom.components.CommonFeatureScreen
-import com.example.islomguide.islom.components.PRTopBar
+import com.example.islomguide.core.ui_kit.CommonFeatureScreen
 import com.example.islomguide.islom.logic.IslomViewModel
 import com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.PrayerReadVM
 import kotlinx.coroutines.launch
@@ -49,27 +48,9 @@ fun TimesScreen(
     val coroutineScope = rememberCoroutineScope()
     val islomVM: IslomViewModel = viewModel()
     val islomState = islomVM.state.collectAsState()
-    // Для topAppBAr
-    val prayerTimes = context.resources.getStringArray(R.array.prayer_time)
     val currentRoute = navController.currentBackStackEntry?.destination?.route
-    val gender_arr = context.resources.getStringArray(R.array.gender_choice)
-    val currentTime = when (currentRoute) {
-        FeatureRoutes.PR_Fajr.route -> prayerTimes[0]
-        FeatureRoutes.PR_Zuhr.route -> prayerTimes[1]
-        FeatureRoutes.PR_Asr.route -> prayerTimes[2]
-        FeatureRoutes.PR_Magrib.route -> prayerTimes[3]
-        FeatureRoutes.PR_Isha.route -> prayerTimes[4]
-        else -> prayerTimes[6]
-    }
-    val gender = when {
-        state.isMan -> gender_arr[4]
-        state.isWoman -> gender_arr[5]
-        else -> ""
-    }
 
     CommonFeatureScreen(
-        topAppBar = { PRTopBar("$currentTime $gender", navController) },
-        navController = navController,
         content = {
             Column(modifier = Modifier.fillMaxSize()) {
                 // Содержание

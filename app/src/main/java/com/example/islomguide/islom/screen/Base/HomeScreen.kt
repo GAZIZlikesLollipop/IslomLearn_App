@@ -1,9 +1,17 @@
 package com.example.islomguide.islom.ui.screen.homeScreen
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,8 +27,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,11 +43,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.islomguide.R
+import com.example.islomguide.core.main.Routes
+import com.example.islomguide.core.main.Routes.BaseGraph
 import com.example.islomguide.core.main.Routes.InternalGraph
 import com.example.islomguide.core.ui_kit.CommonBaseScreen
 import com.example.islomguide.core.ui_kit.ErrorScreen
@@ -49,18 +59,15 @@ import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeUi
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModel
 import kotlinx.coroutines.delay
 
-@SuppressLint("NewApi")
+@SuppressLint("NewApi", "SuspiciousIndentation", "UnusedContentLambdaTargetStateParameter")
 @Composable
 fun Home(
     navController: NavController,
     viewModel : PrayerTimeViewModel
-){
+) {
     val uiState = viewModel.prayerTimeUiState
     val context = LocalContext.current
     var country by remember { mutableStateOf(viewModel.selectedCountry) }
-    val again = context.getText(R.string.try_again)
-    val error = context.getText(R.string.error)
-
 
     LaunchedEffect(Unit) {
         viewModel.setCountry(context, viewModel.getCity())
@@ -69,13 +76,19 @@ fun Home(
     val time = viewModel.currentTime
     val nextPrayerTime = viewModel.currentTimeToNextPrayer
 
-    if(viewModel.selectedCity.isNotEmpty() && viewModel.selectedCountry.isNotEmpty()) {
-
         CommonBaseScreen(navController = navController) {
-            LaunchedEffect(Unit){
+            LaunchedEffect(Unit) {
                 viewModel.getCurrentDateAndPrayerTimes()
             }
             Box {
+                AnimatedContent(
+                    uiState,
+                    transitionSpec = {
+                        expandVertically(
+                            animationSpec = tween(800)
+                        ) togetherWith scaleOut(animationSpec = tween(800))
+                    },
+                ) {
                 when (uiState) {
                     is PrayerTimeUiState.Loading -> {
                         CircularProgressIndicator(
@@ -108,8 +121,8 @@ fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp)
-                                .size(height = 200.dp, width = 128.dp)
-                                .offset(y = 30.dp)
+                                .size(height = 210.dp, width = 128.dp)
+                                .offset(y = 64.dp)
                                 .clickable {
                                     navController.navigate(InternalGraph.PrayerTime.route) // Навигация
                                 },
@@ -117,107 +130,106 @@ fun Home(
                             shape = RoundedCornerShape(36.dp)
 
                         ) {
-                            Column {
+                            Column(
+                                modifier =Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
                                 Text(
-                                    "${time}\n",
-                                    style = MaterialTheme.typography.displayMedium,
+                                    time,
+                                    style = MaterialTheme.typography.displayLarge,
                                     textAlign = TextAlign.Right,
                                     color = MaterialTheme.colorScheme.secondary,
                                     modifier = Modifier
-                                        .padding(16.dp)
-                                        .offset(x = 75.dp, y = 8.dp)
+
+
                                 )
                                 Text(
                                     currentPrayer,
-                                    style = MaterialTheme.typography.displayMedium,
+                                    style = MaterialTheme.typography.displayLarge,
                                     textAlign = TextAlign.Right,
                                     color = MaterialTheme.colorScheme.secondary,
                                     modifier = Modifier
-                                        .offset(y = (-40).dp, x = 115.dp)
+
                                 )
                                 Text(
                                     nextPrayerTime,
-                                    style = MaterialTheme.typography.displayMedium,
+                                    style = MaterialTheme.typography.displayLarge,
                                     textAlign = TextAlign.Right,
                                     color = MaterialTheme.colorScheme.secondary,
                                     modifier = Modifier
-                                        .offset(y = (-25).dp, x = 80.dp)
+
                                 )
                             }
                         }
-                        //Test
-
                     }
-
                 }
             }
-        }
-        }else{
-            WelcomeScreen(navController, viewModel, context)
-        }
-
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun WelcomeScreen(
-    navController: NavController,
-    viewModel: PrayerTimeViewModel,
-    context: Context
-){
-
-    val city_choose = context.getString(R.string.city_choose)
-    val cities = context.resources.getStringArray(R.array.cities)
-    Box(
-        Modifier
-            .background(MaterialTheme.colorScheme.onSecondary)
-            .fillMaxSize(),
-    ){
-        Card(
-            Modifier
-                .align(Alignment.Center),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
-        ){
-            Spacer(Modifier.padding(vertical = 8.dp))
-            Text(
-                city_choose,
-                style = MaterialTheme.typography.displayLarge,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            Spacer(Modifier.padding(vertical = 12.dp))
-            Column(
-                Modifier
-
-            ){
-                cities.forEach { city ->
-
-                    Surface(
-                        onClick = {
-                            viewModel.setCity(city)
-                            viewModel.setCountry(context, city)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            city,
-                            style = MaterialTheme.typography.displayMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                        Icon(
-                            imageVector = Icons.Rounded.ChevronRight,
-                            contentDescription = null,
-                            Modifier
-                                .size(50.dp)
-                                .offset(x = 165.dp)
-                        )
-                    }
-                    Spacer(Modifier.padding(vertical = 5.dp))
-                }
-                Spacer(Modifier.padding(vertical = 8.dp))
             }
         }
-
     }
-}
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @Composable
+    fun WelcomeScreen(
+        navController: NavController,
+        viewModel: PrayerTimeViewModel,
+    ) {
+
+        val context = LocalContext.current
+        val city_choose = stringResource(R.string.city_choose)
+        val cities = stringArrayResource(R.array.cities)
+        Box(
+            Modifier
+                .background(MaterialTheme.colorScheme.onSecondary)
+                .fillMaxSize(),
+        ) {
+            Card(
+                Modifier
+                    .align(Alignment.Center),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+            ) {
+                Spacer(Modifier.padding(vertical = 8.dp))
+                Text(
+                    city_choose,
+                    style = MaterialTheme.typography.displayLarge,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(Modifier.padding(vertical = 12.dp))
+                Column(
+                    Modifier
+
+                ) {
+                    cities.forEach { city ->
+
+                        Surface(
+                            onClick = {
+                                viewModel.setCity(city)
+                                viewModel.setCountry(context, city)
+                                navController.navigate(BaseGraph.Home.route)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                city,
+                                style = MaterialTheme.typography.displayMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
+                            Icon(
+                                imageVector = Icons.Rounded.ChevronRight,
+                                contentDescription = null,
+                                Modifier
+                                    .size(50.dp)
+                                    .offset(x = 165.dp)
+                            )
+                        }
+                        Spacer(Modifier.padding(vertical = 5.dp))
+                    }
+                    Spacer(Modifier.padding(vertical = 8.dp))
+                }
+            }
+
+        }
+    }

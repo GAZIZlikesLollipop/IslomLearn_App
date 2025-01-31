@@ -7,16 +7,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.islomguide.core.data.model.network.JuzData
-import com.example.islomguide.core.data.model.network.SurahsData
+import com.example.islomguide.core.data.model.network.QuranData
 import com.example.islomguide.core.data.repository.BookRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
 // Состояние для Ayah
 sealed interface BookUiState {
-    data class Success(val list: List<SurahsData?>) : BookUiState
+    data class Success(val list: QuranData?) : BookUiState
     object Error : BookUiState
     object Loading : BookUiState
 }
@@ -34,35 +33,15 @@ class BookViewModel(private val bookRepository: BookRepository): ViewModel() {
         private set
     var juzUiState: JuzUiState by mutableStateOf(JuzUiState.Loading)
         private set
-
-
-    fun fetchSurahs(surahId : Int) {
+    var surahId by mutableStateOf(0)
+    var juzId by mutableStateOf(0)
+    fun fetchBookContent(){
         viewModelScope.launch {
-            bookUiState = try {
-                BookUiState.Success(listOf(bookRepository.getSurahs(surahId)))
-            } catch (e: IOException) {
+            bookUiState = try{
+                BookUiState.Success(bookRepository.getQuranContent())
+            }catch (e: IOException) {
                 BookUiState.Error
             } catch (e: HttpException) {
-                BookUiState.Error
-            }
-        }
-    }
-
-    fun fetchAllSurahs() {
-        viewModelScope.launch(Dispatchers.IO) {
-            bookUiState = try {
-                val tempList = mutableListOf<SurahsData?>()
-                for (id in 1..114) { // Итерируем по всем сурам
-                    val surah = bookRepository.getSurahs(id)
-                    surah.let { tempList.addAll(listOf(it)) } // Добавляем только ненулевые данные
-                } // Обновляем список сур
-                BookUiState.Success(tempList)
-            } catch (e: IOException) {
-                Log.e("BookViewModel", "Network Error: ${e.message}")
-                BookUiState.Error
-
-            } catch (e: HttpException) {
-                Log.e("BookViewModel", "HTTP Error: ${e.message}")
                 BookUiState.Error
             }
         }

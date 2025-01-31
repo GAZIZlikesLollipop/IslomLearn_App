@@ -1,20 +1,22 @@
 package com.example.islomguide.islom.screen.Internal.education.BookScreen.components.sections
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -23,97 +25,53 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.islomguide.R
-import com.example.islomguide.core.data.model.network.SurahsData
-import com.example.islomguide.core.ui_kit.CommonInternalScreen
+import com.example.islomguide.core.data.model.network.QuranData
+import com.example.islomguide.core.ui_kit.CommonFeatureScreen
+import com.example.islomguide.core.ui_kit.ErrorScreen
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookUiState
 import com.example.islomguide.islom.screen.Internal.education.BookScreen.BookViewModel
-import com.example.islomguide.islom.screen.Internal.education.BookScreen.components.NavTopBar
+import androidx.compose.foundation.lazy.items
+import com.example.islomguide.core.ui_kit.Loading
 
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Composable
 fun BookScreen(
     navController: NavController,
     viewModel: BookViewModel,
 ){
-
-    val surahUiState = viewModel.bookUiState
-    val again = stringResource(R.string.try_again)
-    val error = stringResource(R.string.error)
-
+    val uiState = viewModel.bookUiState
     LaunchedEffect(Unit) {
-        viewModel.fetchAllSurahs()
+        viewModel.fetchBookContent()
     }
-
-    CommonInternalScreen(
-        navController
-    ) {
+    CommonFeatureScreen {
         Box {
-            NavTopBar(navController)
-            when (surahUiState) {
-                is BookUiState.Error -> {
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .offset(y = 150.dp)) {
-                        Text(
-                            error,
-                            style = MaterialTheme.typography.headlineLarge,
-                            color = MaterialTheme.colorScheme.onError,
-                            modifier = Modifier.offset(x = 65.dp)
-                        )
-                        Spacer(Modifier.padding(vertical = 36.dp))
-                        Button(
-                            onClick = { viewModel.fetchAllSurahs() },
-                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer),
-                            modifier = Modifier
-                                .height(75.dp)
-                                .offset(x = 70.dp)
-
-                        ) {
-                            Text(
-                                again,
-                                style = MaterialTheme.typography.headlineMedium,
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    }
-                }
-
-                is BookUiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(82.dp)
-                            .align(Alignment.Center)
-                            .offset(y = 150.dp)
-                    )
-                }
-
-                is BookUiState.Success -> {
-                    (surahUiState).list.let {
-                        LazyColumn(
-                            Modifier
+            AnimatedContent(
+                uiState,
+                transitionSpec = {
+                    fadeIn(
+                        animationSpec = tween(1500)
+                    )togetherWith fadeOut(animationSpec = tween(800))
+                },
+            ) {
+                when (uiState) {
+                    is BookUiState.Error -> {
+                        ErrorScreen(
+                            { viewModel.fetchBookContent() }, modifier = Modifier
                                 .fillMaxSize()
-                                .padding(top = 50.dp)
-                        ) {
-                            it.forEachIndexed { _, surahs ->
-                                item {
-                                    if (surahs != null) {
-                                        Success(surahs,navController
-                                        ) { navController.navigate("b_book_dt/${surahs.number?.minus(
-                                            1
-                                        )}/${surahs.englishName}") }
-                                    }
+                                .align(alignment = Alignment.Center)
+                        )
+                    }
 
-                                }
+                    is BookUiState.Loading -> {
+                        Loading()
+                    }
 
-                            }
-
-                        }
-
+                    is BookUiState.Success -> {
+                        BookContent(uiState.list,navController,viewModel)
                     }
                 }
             }
@@ -121,56 +79,72 @@ fun BookScreen(
     }
 }
 @Composable
-fun Success(
-    surahs: SurahsData,
+fun BookContent(
+    content: QuranData?,
     navController: NavController,
-    onClick : () -> Unit
-){
-    val context = LocalContext.current
-    val ayat = context.getString(R.string.ayat)
-    Box {
-        Card(
-            shape = RoundedCornerShape(8.dp),
-            modifier = Modifier.padding(6.dp)
-                .clickable {
-                    onClick()
-                },
-        ) {
-            Row {
-                surahs.number?.let {
-                    Text(
-                        "$it.",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp)
-                            .offset(y = (8).dp),
-                        color = MaterialTheme.colorScheme.tertiary
-                    )
-                }
-                Column(modifier = Modifier
-                    .weight(2f)
-                    .offset(y = (7).dp)) {
+    viewModel: BookViewModel
+) {
+    val ayat = stringResource(R.string.ayat)
 
-                    surahs.englishName?.let {
-                        Text(
-                            it,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .offset(y = 108.dp)
+    ) {
+        if (content != null) {
+            items(content.surahs) { surahs ->
+                Box {
+                    Card(
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .padding(3.dp)
+                            .clickable {
+                                viewModel.surahId = surahs?.number ?: 0
+                                navController.navigate(
+                                    "b_book_dt/${surahs?.number?.minus(1)}"
+                                )
+                            },
+                    ) {
+                        Row {
+                            Spacer(Modifier.padding(vertical = 32.dp))
+
+                            Text(
+                                "${surahs?.number}.",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp)
+                                    .offset(y = (8).dp),
+                                color = MaterialTheme.colorScheme.tertiary
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .weight(2f)
+                                    .offset(y = (7).dp)
+                            ) {
+
+                                surahs?.englishName?.let {
+                                    Text(
+                                        it,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                                Text(
+                                    "${surahs?.revelationType} ${surahs?.ayahs?.size} $ayat",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            surahs?.name?.let {
+                                Text(
+                                    "${it}\n",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    modifier = Modifier.offset(x = (-12).dp, y = 16.dp),
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+                        }
                     }
-                        Text(
-                            "${surahs.revelationType} ${surahs.numberOfAyahs} $ayat",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                }
-                surahs.name?.let {
-                    Text(
-                        it,
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.offset(x = (-12).dp, y = 16.dp),
-                        color = MaterialTheme.colorScheme.secondary
-                    )
                 }
             }
         }

@@ -7,6 +7,7 @@ import androidx.compose.material.icons.rounded.Mosque
 import androidx.compose.material.icons.rounded.TrackChanges
 import androidx.navigation.NavController
 import com.example.islomguide.R
+import com.example.islomguide.core.main.Routes
 import com.example.islomguide.core.main.Routes.BaseGraph
 import com.example.islomguide.core.main.Routes.InternalGraph
 
@@ -21,7 +22,7 @@ class CardData {
             BaseGraph.Home.route -> {
                 listOf(
                     ButtonNavCard(
-                        title = titles[10],
+                        title = titles[9],
                         route = InternalGraph.PrayerTracker,
                         image = null,
                         icon = Icons.Rounded.TrackChanges
@@ -49,12 +50,6 @@ class CardData {
 
             BaseGraph.Education.route -> {
                 listOf(
-                    ButtonNavCard(
-                        title = titles[8],
-                        route = InternalGraph.IslamBaseGuide,
-                        image = R.drawable.islom_learn,
-                        icon = null
-                    ),
                     ButtonNavCard(
                         title = titles[3],
                         route = InternalGraph.PrayerRead,
@@ -85,7 +80,7 @@ class CardData {
                         icon = null
                     ),
                     ButtonNavCard(
-                        title = titles[9],
+                        title = titles[8],
                         route = InternalGraph.Zicry,
                         image = R.drawable.zicry,
                         icon = null

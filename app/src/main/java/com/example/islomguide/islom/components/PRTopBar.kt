@@ -22,21 +22,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.islomguide.core.main.Routes
+import com.example.islomguide.R
 import com.example.islomguide.core.main.Routes.FeatureRoutes
-import com.example.islomguide.core.main.Routes.InternalGraph
 import com.example.islomguide.islom.logic.IslomViewModel
 
 
 @Composable
 fun PRTopBar(
-    headText : String,
+    gender: String,
     navController: NavController
 ){
+    val context = LocalContext.current
     val currentRoute = navController.currentBackStackEntry?.destination?.route
+    val prayerTimes = context.resources.getStringArray(R.array.prayer_time)
+
+    val currentTime = when (currentRoute) {
+        FeatureRoutes.PR_Fajr.route -> prayerTimes[0]
+        FeatureRoutes.PR_Zuhr.route -> prayerTimes[1]
+        FeatureRoutes.PR_Asr.route -> prayerTimes[2]
+        FeatureRoutes.PR_Magrib.route -> prayerTimes[3]
+        FeatureRoutes.PR_Isha.route -> prayerTimes[4]
+        else -> prayerTimes[6]
+    }
+
     val viewModel : IslomViewModel = viewModel()
     val state  = viewModel.state.collectAsState()
     val icon : ImageVector = if(state.value.content){
@@ -49,13 +61,7 @@ fun PRTopBar(
         title = {
             IconButton(
                 onClick = {
-                    when(currentRoute){
-                        InternalGraph.Book.route , FeatureRoutes.B_Juz.route , FeatureRoutes.B_Bookmarks.route -> navController.navigate(Routes.BaseGraph.Education.route)
-                        FeatureRoutes.B_BookDT.route -> {
-                            navController.navigate(InternalGraph.Book.route)
-                        }
-                        else -> navController.popBackStack()
-                    }
+                    navController.popBackStack()
                 }
             ){
                 Icon(
@@ -67,7 +73,7 @@ fun PRTopBar(
                 )
             }
             Text(
-                text = headText,
+                text = "$currentTime $gender",
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.padding(horizontal = 50.dp),
                 color = MaterialTheme.colorScheme.onBackground

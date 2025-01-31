@@ -52,7 +52,7 @@ fun Settings(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(45.dp)
-                .offset(y = 24.dp)
+                .offset(y = 75.dp)
             ,
             color = MaterialTheme.colorScheme.onSecondary
         ){

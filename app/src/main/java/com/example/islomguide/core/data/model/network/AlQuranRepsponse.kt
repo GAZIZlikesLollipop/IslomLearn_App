@@ -3,28 +3,23 @@ package com.example.islomguide.core.data.model.network
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AlQuranRepsponse(
-    val surahsRepsponse: SurahsRepsponse,
-    val juzResponse: JuzResponse
+data class QuranRepsponse(
+    val data: QuranData
 )
-
 @Serializable
-data class SurahsRepsponse(
-    val data: SurahsData?
+data class QuranData(
+    val surahs: List<QuranSurahs?>
 )
-
 @Serializable
-data class SurahsData(
+data class QuranSurahs(
     val number : Int?,
     val name: String?,
     val englishName : String?,
     val revelationType : String?,
-    val numberOfAyahs : Int?,
-    val ayahs: List<S_Ayahs>
+    val ayahs: List<QuranAyahs>
 )
-
 @Serializable
-data class S_Ayahs(
+data class QuranAyahs(
     val number: Int?,
     val text : String?,
     val numberInSurah : Int?

@@ -11,7 +11,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.islomguide.R
 import com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.components.ChoiceTimeCard
-import com.example.islomguide.core.ui_kit.CommonInternalScreen
+import com.example.islomguide.core.ui_kit.CommonFeatureScreen
 import com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.PrayerReadVM
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModel
 
@@ -38,11 +37,8 @@ fun PrayerReadScreen(
     val context = LocalContext.current
     val choice = context.getString(R.string.choice_MF)
     val gender = context.resources.getStringArray(R.array.gender_choice)
-    val state = viewModel.state.collectAsState()
 
-    CommonInternalScreen(
-        navController
-    ) {
+    CommonFeatureScreen {
         if(isFirstS) {
             Column(
                 modifier

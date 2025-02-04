@@ -51,7 +51,7 @@ fun PrayerTimeScreen(
     }
     val uiState = viewModel.prayerTimeUiState
 
-    CommonFeatureScreen {
+    CommonFeatureScreen({
         Box {
             when (uiState) {
                 is PrayerTimeUiState.Success -> {
@@ -74,7 +74,7 @@ fun PrayerTimeScreen(
                 }
             }
         }
-    }
+    }) { null }
 }
 
 
@@ -88,7 +88,7 @@ fun SuccessScreen(
     val context = LocalContext.current
     val prayer_times = context.resources.getStringArray(R.array.prayer_time)
     val current_time = viewModel.currentTime
-    val current_date = viewModel.todayDate
+    val current_date = viewModel.currentDate
 
     LaunchedEffect(key1 = true) {
         while (true) {

@@ -38,7 +38,7 @@ fun PrayerReadScreen(
     val choice = context.getString(R.string.choice_MF)
     val gender = context.resources.getStringArray(R.array.gender_choice)
 
-    CommonFeatureScreen {
+    CommonFeatureScreen({
         if(isFirstS) {
             Column(
                 modifier
@@ -85,5 +85,5 @@ fun PrayerReadScreen(
             ChoiceTimeCard(navController, viewModel2)
         }
 
-    }
+    }) { null }
 }

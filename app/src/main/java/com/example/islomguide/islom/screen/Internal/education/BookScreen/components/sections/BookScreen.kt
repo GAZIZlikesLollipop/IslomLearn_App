@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,49 +45,51 @@ fun BookScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchBookContent()
     }
-    CommonFeatureScreen {
-        Box {
-            AnimatedContent(
-                uiState,
-                transitionSpec = {
-                    fadeIn(
-                        animationSpec = tween(1500)
-                    )togetherWith fadeOut(animationSpec = tween(800))
-                },
-            ) {
-                when (uiState) {
-                    is BookUiState.Error -> {
-                        ErrorScreen(
-                            { viewModel.fetchBookContent() }, modifier = Modifier
-                                .fillMaxSize()
-                                .align(alignment = Alignment.Center)
-                        )
-                    }
+    CommonFeatureScreen(
+        content = {
+            Box {
+                AnimatedContent(
+                    uiState,
+                    transitionSpec = {
+                        fadeIn(
+                            animationSpec = tween(1500)
+                        ) togetherWith fadeOut(animationSpec = tween(800))
+                    },
+                ) {
+                    when (uiState) {
+                        is BookUiState.Error -> {
+                            ErrorScreen(
+                                { viewModel.fetchBookContent() }, modifier = Modifier
+                                    .fillMaxSize()
+                                    .align(alignment = Alignment.Center)
+                            )
+                        }
 
-                    is BookUiState.Loading -> {
-                        Loading()
-                    }
+                        is BookUiState.Loading -> {
+                            Loading()
+                        }
 
-                    is BookUiState.Success -> {
-                        BookContent(uiState.list,navController,viewModel)
+                        is BookUiState.Success -> {
+                            BookContent(uiState.list, navController)
+                        }
                     }
                 }
             }
-        }
-    }
+        },
+
+    ) { null }
 }
 @Composable
 fun BookContent(
     content: QuranData?,
-    navController: NavController,
-    viewModel: BookViewModel
+    navController: NavController
 ) {
     val ayat = stringResource(R.string.ayat)
 
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .offset(y = 108.dp)
+            .padding(top = 108.dp)
     ) {
         if (content != null) {
             items(content.surahs) { surahs ->
@@ -99,15 +99,12 @@ fun BookContent(
                         modifier = Modifier
                             .padding(3.dp)
                             .clickable {
-                                viewModel.surahId = surahs?.number ?: 0
                                 navController.navigate(
                                     "b_book_dt/${surahs?.number?.minus(1)}"
                                 )
                             },
                     ) {
                         Row {
-                            Spacer(Modifier.padding(vertical = 32.dp))
-
                             Text(
                                 "${surahs?.number}.",
                                 style = MaterialTheme.typography.titleLarge,

@@ -17,10 +17,11 @@ interface AladhanApi {
 }
 
 interface AlQuranApi {
+
+    @GET("v1/quran/quran-uthmani")
+    suspend fun getQuranContent(): QuranRepsponse
     @GET("v1/juz/{num}/quran-uthmani")
     suspend fun getJuz(
         @Path("num") num : Int
     ): JuzResponse
-    @GET("v1/quran/quran-uthmani")
-    suspend fun getQuranContent(): QuranRepsponse
 }

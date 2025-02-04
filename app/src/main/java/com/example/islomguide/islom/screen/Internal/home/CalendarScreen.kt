@@ -12,7 +12,7 @@ fun CalendarScreen(
     viewModel: IslomViewModel,
     modifier: Modifier = Modifier
 ){
-    CommonFeatureScreen {
+    CommonFeatureScreen({
 
-    }
+    }) { null }
 }

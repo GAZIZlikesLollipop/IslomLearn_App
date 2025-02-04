@@ -54,7 +54,7 @@ fun TasbexScreen(
     }else{
         "${state.currentCount}/${state.countMax}"
     }
-    CommonFeatureScreen {
+    CommonFeatureScreen({
         Row(
             Modifier.padding(30.dp)
         ){
@@ -94,19 +94,19 @@ fun TasbexScreen(
             }
 
         }
-            OutlinedButton(
-                onClick = { viewModel.increaseCount() },
-                Modifier
-                    .padding(125.dp)
-                    .padding(vertical = 150.dp)
-                    .size(150.dp)
-            ) {
-                Text(
-                    text = tex2,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+        OutlinedButton(
+            onClick = { viewModel.increaseCount() },
+            Modifier
+                .padding(125.dp)
+                .padding(vertical = 150.dp)
+                .size(150.dp)
+        ) {
+            Text(
+                text = tex2,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
         if(dialog1){
             AlertDialog(
                 onDismissRequest = { dialog1 = false },
@@ -138,34 +138,34 @@ fun TasbexScreen(
             )
         }
         if(dialog2){
-        AlertDialog(
-            onDismissRequest = { dialog2 = false },
-            title = {Text(alert_array[0])},
-            text = {Text(alert_array[4])},
-            confirmButton = {
-                Button(
-                    onClick = {
-                        viewModel.ChangeMax()
-                        dialog2 = false
+            AlertDialog(
+                onDismissRequest = { dialog2 = false },
+                title = {Text(alert_array[0])},
+                text = {Text(alert_array[4])},
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.ChangeMax()
+                            dialog2 = false
+                        }
+                    ){
+                        Text(
+                            alert_array[2]
+                        )
                     }
-                ){
-                    Text(
-                        alert_array[2]
-                    )
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = {
-                        dialog2 = false
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            dialog2 = false
+                        }
+                    ){
+                        Text(
+                            alert_array[3]
+                        )
                     }
-                ){
-                    Text(
-                        alert_array[3]
-                    )
                 }
-            }
-        )
-    }
-    }
+            )
+        }
+    }) { null }
 }

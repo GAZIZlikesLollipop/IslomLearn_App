@@ -1,6 +1,7 @@
 package com.example.islomguide.core.main
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,21 +35,32 @@ import com.example.islomguide.islom.screen.Internal.education.PrayerReadScreen.P
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModel
 import com.example.islomguide.islom.screen.Internal.home.PrayerTime.PrayerTimeViewModelFactory
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 
 class MainActivity : ComponentActivity() {
+
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "location")
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "NewApi",
         "StateFlowValueCalledInComposition"
     )
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         val bookRepository = NetworkBookRepository(RetrofitClient.bookApi)
         val bookViewModel: BookViewModel = ViewModelProvider(this, BookViewModelFactory(bookRepository))[BookViewModel::class.java]
 
+
+        val userLocationRepository = com.example.islomguide.core.data.repository.UserLocationRepository(dataStore)
+
         val prayerTimesRepository = NetworkPrayerTimeRepository(RetrofitClient.aladhanApi)
-        val application = application as IslomLearnApplication // Get the application instance
-        val userLocationRepository = application.userLocationRepository // Access the repository
         val prayerTimeVMFactory = PrayerTimeViewModelFactory(prayerTimesRepository, userLocationRepository)
         val prayerReadVM: PrayerReadVM = ViewModelProvider(this)[PrayerReadVM::class.java]
 
@@ -56,6 +68,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             IslomGuideTheme {
+
+                val first_Route = if(prayerTimeViewModel.selectedCountry.isNotEmpty() && prayerTimeViewModel.selectedCity.isNotEmpty()){
+                    BaseGraph.Home.route
+                }else{
+                    BaseGraph.Welcome.route
+                }
                 val state = prayerReadVM.state.value
                 val gender_arr = stringArrayResource(R.array.gender_choice)
                 val gender = when {
@@ -67,13 +85,13 @@ class MainActivity : ComponentActivity() {
                 val currentBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = currentBackStackEntry?.destination?.route
                 Log.d("CrrentRoute", "Current route is: $currentRoute")
-                Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
+
                     Scaffold(
                         topBar = {
                             when(currentRoute) {
                                 BaseGraph.Practice.route, BaseGraph.Home.route , BaseGraph.Education.route , BaseGraph.Setting.route, BaseGraph.Welcome.route  -> BaseAppTopBaseBar(navController)
                                 InternalGraph.PrayerTime.route,InternalGraph.PrayerTracker.route,InternalGraph.Calendar.route,InternalGraph.Mosque.route,InternalGraph.QiblaLocation.route,InternalGraph.PrayerRead.route,InternalGraph.Dua.route,InternalGraph.Tasbeh.route,InternalGraph.Zicry.route -> InternalTopAppBar(navController)
-                                InternalGraph.Book.route, FeatureRoutes.B_Juz.route, FeatureRoutes.B_Bookmarks.route, "b_juz_dt/${bookViewModel.juzId}/${bookViewModel.surahId}", "b_book_dt/${bookViewModel.surahId}", FeatureRoutes.B_BMDT.route-> BookTopBar(navController)
+                                InternalGraph.Book.route, FeatureRoutes.B_Juz.route, FeatureRoutes.B_Bookmarks.route -> BookTopBar(navController)
                                 FeatureRoutes.PR_Fajr.route, FeatureRoutes.PR_Asr.route,FeatureRoutes.PR_Magrib.route,FeatureRoutes.PR_Zuhr.route,FeatureRoutes.PR_Isha.route -> PRTopBar(gender,navController)
                             }
                         },
@@ -85,10 +103,11 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         content = {
-                            Navigation(navController)
-                        }
+                            Navigation(navController, first_Route)
+                        },
+                        containerColor = MaterialTheme.colorScheme.onSecondary
                     )
-                }
+
             }
         }
     }

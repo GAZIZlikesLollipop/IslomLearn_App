@@ -12,7 +12,7 @@ fun QiblaLocScreen(
     viewModel: IslomViewModel,
     modifier: Modifier = Modifier
 ){
-    CommonFeatureScreen {
+    CommonFeatureScreen({
 
-    }
+    }) { null }
 }

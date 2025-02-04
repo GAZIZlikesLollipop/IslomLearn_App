@@ -186,6 +186,7 @@ fun TimesScreen(
                     }
                 }
             }
-        }
+        },
+        topAppBar = {null}
     )
 }

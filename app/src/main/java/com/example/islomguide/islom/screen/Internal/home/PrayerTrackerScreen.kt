@@ -12,7 +12,7 @@ fun PrayerTrackerScreen(
     viewModel: IslomViewModel,
     modifier: Modifier = Modifier
 ){
-    CommonFeatureScreen {
+    CommonFeatureScreen({
 
-    }
+    }) { null }
 }

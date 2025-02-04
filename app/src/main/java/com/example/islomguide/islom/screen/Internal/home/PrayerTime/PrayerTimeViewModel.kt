@@ -46,25 +46,25 @@ class PrayerTimeViewModel(
 
     init{
         viewModelScope.launch {
-            userLocationRepository.getCity.collect{
-                selectedCity = it
-            }
-            userLocationRepository.getCountry.collect{
-                selectedCountry = it
+            userLocationRepository.getLocation.collect{
+                selectedCity = it.first
+                selectedCountry = it.second
+                Log.d("UserPreferences", "Current country is: $selectedCountry")
+                Log.d("UserPreferences", "Current city is: $selectedCity")
             }
             getCurrentDateAndPrayerTimes()
         }
     }
 
     @SuppressLint("NewApi")
-    var todayDate = LocalDate.now()
+    var currentDate = LocalDate.now()
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getCurrentDateAndPrayerTimes() {
         viewModelScope.launch {
             try {
-                val dateString: String = todayDate.toString()
-                if (todayDate != null) {
+                val dateString: String = currentDate.toString()
+                if (currentDate != null) {
                     // 2. Если текущая дата получена, отправляем запрос для времени намаза
                     getPrayerTimes(getCity(), getCountry(), dateString)
                 } else {
@@ -91,7 +91,7 @@ class PrayerTimeViewModel(
         }
     }
 
-    fun setCountry(context: Context, city: String){
+    fun setLocation(context: Context, city: String){
         val countries = context.resources.getStringArray(R.array.countries)
         val cities = context.resources.getStringArray(R.array.cities)
         val index = cities.indexOf(city)
@@ -102,8 +102,9 @@ class PrayerTimeViewModel(
             ""
         }
          viewModelScope.launch {
+             selectedCity = city
             if (country != null) {
-                userLocationRepository.saveCountryPreferences(country)
+                userLocationRepository.saveLocationPreferences(selectedCity, country)
                 selectedCountry = country
             }
         }
@@ -114,13 +115,6 @@ class PrayerTimeViewModel(
         val zoneId = ZoneId.of(getZone(context))
         val currentTime = ZonedDateTime.now(zoneId)
         return currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-    }
-
-    fun setCity(city: String) {
-        viewModelScope.launch {
-            userLocationRepository.saveCityPreferences(city)
-            selectedCity = city
-        }
     }
 
     fun getCity(): String{
@@ -171,14 +165,14 @@ class PrayerTimeViewModel(
     }
     @SuppressLint("NewApi")
     fun getNextDay(num : Long){
-        val nextDay = todayDate.plusDays(num)
-        todayDate = nextDay
+        val nextDay = currentDate.plusDays(num)
+        currentDate = nextDay
     }
 
     @SuppressLint("NewApi")
     fun getYesterday(num: Long){
-        val perviousDay = todayDate.minusDays(num)
-        todayDate = perviousDay
+        val perviousDay = currentDate.minusDays(num)
+        currentDate = perviousDay
     }
 
     @SuppressLint("NewApi", "DefaultLocale")
@@ -196,6 +190,7 @@ class PrayerTimeViewModel(
 
         val nextPrayerTime = prayerTimes.firstOrNull { it.isAfter(currentTime) } ?: prayerTimes.first()
         val duration = java.time.Duration.between(currentTime, nextPrayerTime)
+
         return String.format("-%02d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())
     }
     @SuppressLint("NewApi")

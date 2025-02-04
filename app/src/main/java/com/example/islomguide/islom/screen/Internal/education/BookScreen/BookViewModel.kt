@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
+
 // Состояние для Ayah
 sealed interface BookUiState {
     data class Success(val list: QuranData?) : BookUiState
@@ -28,13 +29,11 @@ sealed interface JuzUiState{
 
 class BookViewModel(private val bookRepository: BookRepository): ViewModel() {
 
-
     var bookUiState: BookUiState by mutableStateOf(BookUiState.Loading)
         private set
     var juzUiState: JuzUiState by mutableStateOf(JuzUiState.Loading)
         private set
-    var surahId by mutableStateOf(0)
-    var juzId by mutableStateOf(0)
+
     fun fetchBookContent(){
         viewModelScope.launch {
             bookUiState = try{
@@ -62,20 +61,21 @@ class BookViewModel(private val bookRepository: BookRepository): ViewModel() {
     fun fetchAllJuz() {
         viewModelScope.launch {
             juzUiState = try {
-                val tempList = mutableListOf<JuzData?>()
-                for (id in 1..30) { // Итерируем по всем сурам
-                    val surah = bookRepository.getJuz(id)
-                    surah.let { tempList.addAll(listOf(it)) } // Добавляем только ненулевые данные
-                } // Обновляем список сур
-                JuzUiState.Success(tempList)
+                // Запускаем параллельно запросы для каждого juz
+                val deferredList = (1..30).map { id ->
+                        bookRepository.getJuz(id)
+                }
+                // Ждем завершения всех запросов и собираем результаты
+                val results = deferredList
+                JuzUiState.Success(results)
             } catch (e: IOException) {
                 Log.e("BookViewModel", "Network Error: ${e.message}")
                 JuzUiState.Error
-
             } catch (e: HttpException) {
                 Log.e("BookViewModel", "HTTP Error: ${e.message}")
                 JuzUiState.Error
             }
         }
     }
+
 }

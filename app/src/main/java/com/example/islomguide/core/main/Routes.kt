@@ -34,9 +34,6 @@ object Routes {
         object PR_Isha : FeatureRoutes("pr_isha")
         object B_Juz : FeatureRoutes("b_juz")
         object B_Bookmarks : FeatureRoutes("b_bookmarks")
-        object B_BookDT : FeatureRoutes("b_book_dt")
-        object B_JuzDT : FeatureRoutes("b_juz_dt")
-        object B_BMDT : FeatureRoutes("b_bm_dt")
     }
 }
 

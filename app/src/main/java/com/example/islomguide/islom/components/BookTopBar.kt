@@ -47,17 +47,18 @@ import com.example.islomguide.islom.screen.Internal.education.BookScreen.compone
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookTopBar(
-    navController: NavController
+    navController: NavController,
+    name: String? = null
 ){
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
+
     val array = stringArrayResource(R.array.inrernal_sections)[1]
-    val array_2 = stringArrayResource(R.array.book_sections)
-    val sections = when(currentRoute){
-        FeatureRoutes.B_JuzDT.route -> array_2[1]
-        FeatureRoutes.B_BookDT.route -> array_2[0]
-        FeatureRoutes.B_BMDT.route -> array_2[2]
-        else -> array
+
+    val text = if(name?.isNotEmpty() == true){
+        name
+    }else{
+        array
     }
     Column {
         TopAppBar(
@@ -66,10 +67,10 @@ fun BookTopBar(
                     IconButton(
                         onClick = {
                             when (currentRoute) {
-                                FeatureRoutes.B_BookDT.route -> navController.navigate(InternalGraph.Book.route)
-                                FeatureRoutes.B_JuzDT.route -> navController.navigate(FeatureRoutes.B_Juz.route)
-                                FeatureRoutes.B_BMDT.route -> navController.navigate(FeatureRoutes.B_Bookmarks.route)
-                                else -> navController.navigate(BaseGraph.Education.route)
+                                FeatureRoutes.B_Juz.route -> navController.navigate(BaseGraph.Education.route)
+                                FeatureRoutes.B_Bookmarks.route -> navController.navigate(BaseGraph.Education.route)
+                                InternalGraph.Book.route -> navController.navigate(BaseGraph.Education.route)
+                                else -> navController.popBackStack()
                             }
                         }
                     ) {
@@ -82,7 +83,7 @@ fun BookTopBar(
                         )
                     }
                     Text(
-                        text = sections,
+                        text = text,
                         style = MaterialTheme.typography.headlineLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -173,7 +174,7 @@ fun NavTopBar(
                         }
                     },
                     icon = {},
-                    alwaysShowLabel = true, // Показывать текст всегда
+                    alwaysShowLabel = true
                 )
             }
         }

@@ -5,12 +5,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +16,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,10 +42,8 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.islomguide.R
-import com.example.islomguide.core.main.Routes
 import com.example.islomguide.core.main.Routes.BaseGraph
 import com.example.islomguide.core.main.Routes.InternalGraph
 import com.example.islomguide.core.ui_kit.CommonBaseScreen
@@ -70,7 +63,7 @@ fun Home(
     var country by remember { mutableStateOf(viewModel.selectedCountry) }
 
     LaunchedEffect(Unit) {
-        viewModel.setCountry(context, viewModel.getCity())
+        viewModel.setLocation(context, viewModel.getCity())
     }
 
     val time = viewModel.currentTime
@@ -88,13 +81,12 @@ fun Home(
                             animationSpec = tween(800)
                         ) togetherWith scaleOut(animationSpec = tween(800))
                     },
+                    label = "",
                 ) {
                 when (uiState) {
                     is PrayerTimeUiState.Loading -> {
                         CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .offset(x = 150.dp, y = 115.dp)
+                            modifier = Modifier.size(100.dp).offset(x = 150.dp, y = 115.dp)
                         )
                     }
 
@@ -197,16 +189,12 @@ fun Home(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
                 Spacer(Modifier.padding(vertical = 12.dp))
-                Column(
-                    Modifier
-
-                ) {
+                Column{
                     cities.forEach { city ->
 
                         Surface(
                             onClick = {
-                                viewModel.setCity(city)
-                                viewModel.setCountry(context, city)
+                                viewModel.setLocation(context, city)
                                 navController.navigate(BaseGraph.Home.route)
                             },
                             modifier = Modifier.fillMaxWidth()
@@ -230,6 +218,5 @@ fun Home(
                     Spacer(Modifier.padding(vertical = 8.dp))
                 }
             }
-
         }
     }

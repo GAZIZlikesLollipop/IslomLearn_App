@@ -41,7 +41,8 @@ data class JuzData(
 data class J_Ayahs(
     val number: Int?,
     val text: String?,
-    val numberInSurah : Int?
+    val numberInSurah : Int?,
+    val surah : JA_Ayahs
 )
 
 @Serializable
@@ -49,4 +50,9 @@ data class Surahs(
     val number: Int?,
     val englishName: String?,
     val numberOfAyahs: Int?
+)
+
+@Serializable
+data class JA_Ayahs(
+    val number: Int?
 )

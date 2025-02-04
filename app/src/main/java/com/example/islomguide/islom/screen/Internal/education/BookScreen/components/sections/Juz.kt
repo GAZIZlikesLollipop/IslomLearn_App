@@ -55,8 +55,7 @@ fun Juz(
                             JuzList(
                                 juzList = uiState.list,
                                 navController = navController,
-                                juzContentLabels = juzContentLabels,
-                                viewModel
+                                juzContentLabels = juzContentLabels
                             )
                         }
 
@@ -73,7 +72,8 @@ fun Juz(
                     }
                 }
             }
-        }
+        },
+        topAppBar = {null}
     )
 
 }
@@ -82,8 +82,7 @@ fun Juz(
 fun JuzList(
     juzList: List<JuzData?>,
     navController: NavController,
-    juzContentLabels: Array<String>,
-    viewModel: BookViewModel
+    juzContentLabels: Array<String>
 ) {
     LazyColumn(
         modifier = Modifier
@@ -91,10 +90,11 @@ fun JuzList(
             .padding(top = 110.dp)
     ) {
         items(juzList) { juz ->
-            var isExpanded by rememberSaveable { mutableStateOf(false) }
 
             Card(
-                onClick = { isExpanded = !isExpanded },
+                onClick = {
+                    navController.navigate("b_juz_dt/${juz?.number}")
+                },
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.padding(5.dp)
             ) {
@@ -112,40 +112,8 @@ fun JuzList(
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    AnimatedVisibility(visible = isExpanded) {
-                        Column {
-                            juz?.surahs?.values?.forEach { surah ->
-                                JuzCard(surah) {
-                                    viewModel.juzId = juz.number ?: 0
-                                    viewModel.surahId = surah.number ?: 0
-                                    navController.navigate("b_juz_dt/${juz.number}/${surah.number}")
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun JuzCard(
-    surah: Surahs,
-    onClick: () -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 3.dp),
-        shape = RoundedCornerShape(4.dp),
-        onClick = onClick
-    ) {
-        Text(
-            text = "${surah.number}. ${surah.englishName}",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier.padding(8.dp)
-        )
     }
 }

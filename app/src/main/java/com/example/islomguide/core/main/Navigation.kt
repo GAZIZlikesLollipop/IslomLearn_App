@@ -5,13 +5,11 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.islomguide.core.main.Routes.BaseGraph
 import com.example.islomguide.core.main.Routes.FeatureRoutes
@@ -48,25 +46,16 @@ import com.example.islomguide.islom.ui.screen.settingScreen.Settings
 
 @SuppressLint("NewApi")
 @Composable
-fun Navigation(navController : NavHostController) {
-
+fun Navigation(navController : NavHostController, string : String) {
 
     val prayerReadVM : PrayerReadVM = viewModel()
     val prayerTimeVM : PrayerTimeViewModel = viewModel()
     val bookViewModel : BookViewModel = viewModel()
     val tasbexViewModel : TasbexViewModel = viewModel()
     val viewModel : IslomViewModel = viewModel()
-    val first_Route = if(prayerTimeVM.selectedCountry.isNotEmpty() && prayerTimeVM.selectedCity.isNotEmpty()){
-        BaseGraph.Home.route
-    }else{
-        BaseGraph.Welcome.route
-    }
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStackEntry?.destination?.route
-
     NavHost(
         navController = navController,
-        startDestination = first_Route
+        startDestination = string
     ) {
 
         composable(
@@ -303,29 +292,25 @@ fun Navigation(navController : NavHostController) {
 
             BookDetail(
                 viewModel = bookViewModel,
-                surahId = suraId
+                surahId = suraId,
+                navController = navController
             )
         }
 
         composable(
-            "b_juz_dt/{juzId}/{surId}",
-            arguments = listOf(
-                navArgument("juzId") { type = NavType.IntType },
-                navArgument("surId") { type = NavType.IntType }
-            ),
+            "b_juz_dt/{juzId}",
+            arguments = listOf(navArgument("juzId") { type = NavType.IntType }),
             enterTransition = {
                 slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Down, tween(600))
             }
         ) { backStackEntry ->
 
             val juzId = backStackEntry.arguments?.getInt("juzId") ?: 0
-            val surId = backStackEntry.arguments?.getInt("surId") ?: 0
 
             JuzDetail(
                 navController = navController,
                 viewModel = bookViewModel,
-                juzId = juzId,
-                surId = surId
+                juzId = juzId
             )
         }
 

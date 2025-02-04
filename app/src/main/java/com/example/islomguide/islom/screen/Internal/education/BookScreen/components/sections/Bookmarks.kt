@@ -10,8 +10,8 @@ fun Bookmarks(
     navController: NavController,
     viewModel: BookViewModel
 ){
-    CommonFeatureScreen {
+    CommonFeatureScreen({
 
-    }
+    }) { null }
 
 }

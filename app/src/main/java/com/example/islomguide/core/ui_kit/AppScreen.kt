@@ -44,7 +44,6 @@ fun CommonBaseScreen(
 
             }
         },
-        modifier = Modifier.background(MaterialTheme.colorScheme.onSecondary),
         containerColor = MaterialTheme.colorScheme.onSecondary
     )
 }
@@ -52,10 +51,12 @@ fun CommonBaseScreen(
 @Composable
 fun CommonFeatureScreen(
     content: @Composable () -> Unit,
+    topAppBar : @Composable () -> Unit?,
 ){
     Scaffold(
+        topBar = { topAppBar() },
         content = {paddingValues ->
-            Box(
+            Column(
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
@@ -63,7 +64,6 @@ fun CommonFeatureScreen(
                 content()
             }
         },
-        modifier = Modifier.background(MaterialTheme.colorScheme.onSecondary),
         containerColor = MaterialTheme.colorScheme.onSecondary
     )
 }
@@ -71,10 +71,7 @@ fun CommonFeatureScreen(
 fun ErrorScreen( onRetry: () -> Unit, modifier: Modifier = Modifier) {
     val retryLabel = stringResource(R.string.try_again)
     val errorMessage = stringResource(R.string.error)
-
-    Box(
-
-    ) {
+    Box{
         Column(
             modifier = modifier,
             verticalArrangement = Arrangement.Center, // Центрируем по вертикали

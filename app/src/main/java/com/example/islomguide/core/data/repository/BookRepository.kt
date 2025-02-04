@@ -11,11 +11,11 @@ interface BookRepository {
 
 class NetworkBookRepository(private val alQuranApi : AlQuranApi): BookRepository{
 
-    override suspend fun getJuz(juzId: Int): JuzData? {
+    override suspend fun getJuz(juzId: Int): JuzData {
         return alQuranApi.getJuz(juzId).data
     }
 
-    override suspend fun getQuranContent(): QuranData? {
+    override suspend fun getQuranContent(): QuranData {
         return alQuranApi.getQuranContent().data
     }
 
